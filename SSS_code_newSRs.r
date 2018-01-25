@@ -549,10 +549,13 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
     Quant.out[i,2]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Fem_GP_1",rep.new)], " ")[[1]][3])
     Quant.out[i,3]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Fem_GP_1",rep.new)], " ")[[1]][3])
     Quant.out[i,4]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Fem_GP_1",rep.new)], " ")[[1]][3])
-    Quant.out[i,5]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Mal_GP_1",rep.new)], " ")[[1]][3])
-    Quant.out[i,6]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Mal_GP_1",rep.new)], " ")[[1]][3])
-    Quant.out[i,7]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Mal_GP_1",rep.new)], " ")[[1]][3])
-    Quant.out[i,8]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Mal_GP_1",rep.new)], " ")[[1]][3])
+    if(genders==T)
+    {
+      Quant.out[i,5]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Mal_GP_1",rep.new)], " ")[[1]][3])
+      Quant.out[i,6]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Mal_GP_1",rep.new)], " ")[[1]][3])
+      Quant.out[i,7]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Mal_GP_1",rep.new)], " ")[[1]][3])
+      Quant.out[i,8]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Mal_GP_1",rep.new)], " ")[[1]][3])
+    }
     Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("steep",rep.new)], " ")[[1]][3])
     Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
     Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
@@ -713,10 +716,13 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         Quant.out[i,2]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Fem_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,3]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Fem_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,4]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Fem_GP_1",rep.new)], " ")[[1]][3])
+    if(genders==T)
+    {
         Quant.out[i,5]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Mal_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,6]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Mal_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,7]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Mal_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,8]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Mal_GP_1",rep.new)], " ")[[1]][3])
+    }
         Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("steep",rep.new)], " ")[[1]][3])
         Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
         Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
