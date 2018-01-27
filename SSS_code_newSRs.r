@@ -65,7 +65,9 @@ RUN.SS<-function(path, ss.exe="ss",ss.cmd=" -nohess -nox")
 }
 
 
-SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c(3,0.1,0.4,3,0.1,0.4),SR_type=3,h.in=c(1,0.6,0.2),FMSY_M.in=c(1,0.5,0.1),BMSY_B0.in=c(1,0.5,0.1),L1.in=c(0,0,0,0),Linf.in=c(0,0,0,0),k.in=c(0,0,0,0),Zfrac.Beta.in=c(-99,0.2,0.6,-99,0.5,2),R_start=c(0,8),doR0.loop=c(1,4.1,12.1,0.5),sum_age=0,sb_ofl_yrs=c(2010,2011,2012),f_yr=2012,year0=1916,genders=F,BH_FMSY_comp=F)
+SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c(3,0.1,0.4,3,0.1,0.4),SR_type=3,h.in=c(1,0.6,0.2),FMSY_M.in=c(1,0.5,0.1),
+  BMSY_B0.in=c(1,0.5,0.1),L1.in=c(0,0,0,0),Linf.in=c(0,0,0,0),k.in=c(0,0,0,0),Zfrac.Beta.in=c(-99,0.2,0.6,-99,0.5,2),R_start=c(0,8),doR0.loop=c(1,4.1,12.1,0.5),
+  sum_age=0,sb_ofl_yrs=c(2010,2011,2012),f_yr=2012,year0=1916,genders=F,BH_FMSY_comp=F)
 {
   set.seed(seed.in)
   start.time<-Sys.time()
@@ -514,7 +516,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         xx<-1
         #if(doR0.loop[1]==1){R0.explore<-seq(doR0.loop[2],doR0.loop[3],0.5)}
         #if(doR0.loop[1]==2){R0.explore<-seq(doR0.loop[2],doR0.loop[3],-0.5)}
-        R0.explore<-seq(doR0.loop[1],doR0.loop[2],doR0.loop[3])
+        R0.explore<-seq(doR0.loop[2],doR0.loop[3],doR0.loop[4])
         if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==TRUE){Dep.out.testR0<-10}
         if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==FALSE){Dep.out.testR0<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])}
       #  while(abs(as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8]))==0)
