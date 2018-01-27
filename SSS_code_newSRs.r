@@ -705,9 +705,9 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         #Run using .par file if above conditions not met
         print("*** RUNNING WITH .PAR ***")
         starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
-        sum_age_line<-strsplit(starter.new[grep("ss.par",starter.new)], " ")[[1]]
-        sum_age_line[1]<-1
-        starter.new[grep("ss.par",starter.new)]<-paste(sum_age_line, collapse=" ")
+        par_line<-strsplit(starter.new[grep("ss.par",starter.new)], " ")[[1]]
+        par_line[1]<-1
+        starter.new[grep("ss.par",starter.new)]<-paste(par_line, collapse=" ")
         write(starter.new,paste(filepath,"/starter.ss",sep=""))
         RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")
         rep.new<-readLines(paste(filepath,"/Report.sso",sep=""))
@@ -746,9 +746,9 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
         starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
-        sum_age_line<-strsplit(starter.new[grep("ss.par",starter.new)], " ")[[1]]
-        sum_age_line[1]<-0
-        starter.new[grep("ss.par",starter.new)]<-paste(sum_age_line, collapse=" ")
+        par_line<-strsplit(starter.new[grep("ss.par",starter.new)], " ")[[1]]
+        par_line[1]<-0
+        starter.new[grep("ss.par",starter.new)]<-paste(par_line, collapse=" ")
         write(starter.new,paste(filepath,"/starter.ss",sep=""))
         if(Quant.out[i,28]==0&Quant.out[i,14]<100000){i<-i+1}
         else
