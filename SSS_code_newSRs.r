@@ -118,7 +118,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
     if(length(Dep.in)==3)
     {
       if(Dep.in[1]==2){Dep.draw<-round(1-rbeta.ab(1,1-Dep.in[2],Dep.in[3],0.05,0.95),2)}
-      if(Dep.in[1]==10){Dep.draw<-round(rtnorm(1,Dep.in[2],Dep.in[3],0.05,1),2)}
+      if(Dep.in[1]==10){Dep.draw<-round(rtnorm(1,Dep.in[2],Dep.in[3],0.01,1),2)}
       Input.draws[i,2]<-Dep.draw
     }
     if(length(Dep.in)>3)
