@@ -9,7 +9,7 @@
 #_Cond 1 #_Morph_between/within_stdev_ratio (no read if N_morphs=1)
 #_Cond  1 #vector_Morphdist_(-1_in_first_val_gives_normal_approx)
 #
-1 # recr_dist_method for parameters:  1=like 3.24; 2=main effects for GP, Settle timing, Area; 3=each Settle entity; 4=none when N_GP*Nsettle*pop==1
+2 # recr_dist_method for parameters:  1=like 3.24; 2=main effects for GP, Settle timing, Area; 3=each Settle entity; 4=none when N_GP*Nsettle*pop==1
 1 # Recruitment: 1=global; 2=by area (future option)
 1 #  number of recruitment settlement assignments 
 0 # year_x_area_x_settlement_event interaction requested (only for recr_dist_method=1)

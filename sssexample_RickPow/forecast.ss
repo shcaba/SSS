@@ -13,6 +13,7 @@
 1 # F scalar (only used for Do_Forecast==5)
 #_Fcast_years:  beg_selex, end_selex, beg_relF, end_relF, beg_recruits, end_recruits  (enter actual year, or values of 0 or -integer to be rel. endyr)
  0	0	0	0	0	0
+0 # Forecast selectivity (0=fcast selex is mean from year range; 1=fcast selectivity from annual time-vary parms)
 1 # Control rule method (1=catch=f(SSB) west coast; 2=F=f(SSB) ) 
 0.40 # Control rule Biomass level for constant F (as frac of Bzero, e.g. 0.40); (Must be > the no F level below) 
 0.1 # Control rule Biomass level for no F (as frac of Bzero, e.g. 0.10) 

@@ -21,7 +21,7 @@
 #_rows are fleets
 #_fleet_type, timing, area, units, need_catch_mult fleetname
  1 -1 1 1 0 Fishery  # 1
- 2 0.5 1 1 0 Depl  # 2
+ 3 0.5 1 1 0 Depl  # 2
 #_Catch data: yr, seas, fleet, catch, catch_se
 #_catch_se:  standard error of log(catch); can be overridden in control file with detailed F input
 -999 1 1 0 0.05
@@ -135,7 +135,7 @@
 #_yr month fleet obs stderr
 # Depletion Survey
 1918	1	2	1.00		0.01
-2000 1 2 0.12 0.01 # DEPLETION 0.12
+2000 1 2 0.19 0.01 # DEPLETION 0.12
 -9999 1 1 1 1 # terminator for survey observations 
 #
 0 #_N_fleets_with_discard
@@ -166,8 +166,8 @@
 #_Comp_Error:  0=multinomial, 1=dirichlet
 #_Comp_Error2:  parm number  for dirichlet
 #_mintailcomp_addtocomp_combM+F_CompressBins_CompError_ParmSelect
--1 0.001 0 0 0 0 #_fleet:1_Fishery
--1 0.001 0 0 0 0 #_fleet:2_Depl
+-1 0.001 0 0 0 0 0.01 #_fleet:1_Fishery
+-1 0.001 0 0 0 0 0.01 #_fleet:2_Depl
 # sex codes:  0=combined; 1=use female only; 2=use male only; 3=use both as joint sexxlength distribution
 # partition codes:  (0=combined; 1=discard; 2=retained
 37 #_N_LengthBins; then enter lower edge of each length bin
