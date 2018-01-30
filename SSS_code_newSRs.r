@@ -118,6 +118,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
     if(length(Dep.in)==3)
     {
       if(Dep.in[1]==2){Dep.draw<-round(1-rbeta.ab(1,1-Dep.in[2],Dep.in[3],0.05,0.95),2)}
+      if(Dep.in[1]==4){Dep.draw<-round(runif(1,Dep.in[2],Dep.in[3]),2)}
       if(Dep.in[1]==10){Dep.draw<-round(rtnorm(1,Dep.in[2],Dep.in[3],0.01,1),2)}
       Input.draws[i,2]<-Dep.draw
     }
@@ -134,6 +135,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         {
           if(M.in[1]==0){M.draw<-round(rnorm(1,M.in[2],M.in[3]),2)}
           if(M.in[1]==3){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),2)}
+          if(M.in[1]==4){M.draw<-round(runif(1,M.in[2],M.in[3]),2)}
           Input.draws[i,3]<-M.draw
         }
       else{Input.draws[i,3]<-M.draw<-M.in[i,1]}
@@ -144,6 +146,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         {
           if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
           if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
+          if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
           Input.draws.M[i,1]<-M.draw.M
           Input.draws[i,7]<-M.draw.M
         }
@@ -185,6 +188,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         {
           if(M.in[1]==0){M.draw<-round(rnorm(1,M.in[2],M.in[3]),2)}
           if(M.in[1]==3){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),2)}
+          if(M.in[1]==4){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),2)}
           Input.draws[i,3]<-M.draw
         }
         else{Input.draws[i,3]<-M.draw<-M.in[i,1]}
@@ -195,6 +199,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
             {
               if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
               if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
+              if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
               Input.draws.M[i,1]<-M.draw.M
               Input.draws[i,7]<-M.draw.M
             }
@@ -273,6 +278,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         {
           if(M.in[1]==0){M.draw<-round(rnorm(1,M.in[2],M.in[3]),2)}
           if(M.in[1]==3){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),2)}
+          if(M.in[1]==4){M.draw<-round(runif(1,M.in[2],M.in[3]),2)}
           Input.draws[i,3]<-M.draw
         }
         else{Input.draws[i,3]<-M.draw<-M.in[i,1]}
@@ -283,6 +289,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
             {
               if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
               if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
+              if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
               Input.draws.M[i,1]<-M.draw.M
               Input.draws[i,7]<-M.draw.M
             }
