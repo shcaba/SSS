@@ -85,8 +85,8 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
   sb.years<-c(year0:sb_ofl_yrs[1])
   Quant.out<-as.data.frame(matrix(NA,nrow=reps,ncol=28))
   Quant.out.bad<-as.data.frame(matrix(NA,1,ncol=28))
-  SB.out<-as.data.frame(matrix(NA,nrow=reps,ncol=length(sb.years)))
-  colnames(SB.out)<-sb.years
+  SB.out<-TB.out<-SumAge.out<-SPR.out<-as.data.frame(matrix(NA,nrow=reps,ncol=length(sb.years)))
+  colnames(SB.out)<-colnames(TB.out)<-colnames(SumAge.out)<-colnames(SPR.out)<-sb.years
   
   starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
   sum_age_line<-strsplit(starter.new[grep("summary biomass",starter.new)], " ")[[1]]
@@ -552,7 +552,14 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
     
     #Begin extracting info from run
     forecast.file<-readLines(paste(filepath,"/Forecast-report.sso",sep=""))
-    for(iii in 1:length(year0:sb_ofl_yrs[1])){SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])}
+    for(iii in 1:length(year0:sb_ofl_yrs[1]))
+    	{
+    		SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])
+    		TB.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][5])
+    		SumAge.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][6])
+    		SPR.out[i,iii]<-as.numeric(strsplit(rep.new[grep("SPR_series",rep.new)+5+iii], " ")[[2]][8])
+     	}
+    		
     Dep.series.out<-SB.out/SB.out[,1]
     Quant.out[i,1]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Fem_GP_1",rep.new)], " ")[[1]][3])
     Quant.out[i,2]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Fem_GP_1",rep.new)], " ")[[1]][3])
@@ -719,8 +726,14 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")
         rep.new<-readLines(paste(filepath,"/Report.sso",sep=""))
         forecast.file<-readLines(paste(filepath,"/Forecast-report.sso",sep=""))
-        for(iii in 1:length(year0:sb_ofl_yrs[1])){SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])}
-        Dep.series.out<-SB.out/SB.out[,1]
+      for(iii in 1:length(year0:sb_ofl_yrs[1]))
+    	{
+    		SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])
+    		TB.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][5])
+    		SumAge.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][6])
+    		SPR.out[i,iii]<-as.numeric(strsplit(rep.new[grep("SPR_series",rep.new)+5+iii], " ")[[2]][8])
+    	}
+     Dep.series.out<-SB.out/SB.out[,1]
         Quant.out[i,1]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Fem_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,2]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Fem_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,3]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Fem_GP_1",rep.new)], " ")[[1]][3])
@@ -782,8 +795,8 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
       colnames(Input.draws)[c(ltcolnames-1,ltcolnames)]<-c("Beta","Obj_fxn")
     }
   end.time<-Sys.time()
-  Spp.quant.out<-list(Input.draws,Quant.out,SB.out,Dep.series.out, Quant.out.bad,ii-1,(as.numeric(end.time)-as.numeric(start.time))/60)
-  names(Spp.quant.out)<-c("Priors","Posteriors","SB_series","Rel_Stock_status_series","Rejected_draws","Total draws","Runtime_minutes")
+  Spp.quant.out<-list(Input.draws,Quant.out,SB.out,Dep.series.out,TB.out,SumAge.out,SPR.out,Quant.out.bad,ii-1,(as.numeric(end.time)-as.numeric(start.time))/60)
+  names(Spp.quant.out)<-c("Priors","Posteriors","SB_series","Rel_Stock_status_series","Total_Biomass","Summary_Biomass","SPR","Rejected_draws","Total draws","Runtime_minutes")
   SSS.out<-Spp.quant.out
   save(SSS.out,file=paste(filepath,"/SSS_out.DMP",sep=""))
   return(Spp.quant.out)

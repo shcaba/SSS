@@ -1,7 +1,7 @@
 #RUN SSS
-Dir.in<-"C:/Users/Jason.Cope/Desktop/DLM_WH_2017/Tools/Stock_Synthesis_Framework/"
+Dir.in<-"C:/Users/"
 source(paste(Dir.in,"/SSS_code_newSRs.r",sep=""))
-load(paste(Dir.in,"/Dep_sdmod_spp_in.DMP",sep=""))
+#load(paste(Dir.in,"/Dep_sdmod_spp_in.DMP",sep=""))
 
 POP.SSS.BH<-SSS(filepath=paste(Dir.in,"/sssexample_BH",sep=""),
                       file.name=c("simple_pop.dat","simple_pop.ctl"),
