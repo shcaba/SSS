@@ -658,13 +658,13 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         # write(starter.new,paste(filepath,"/starter.ss",sep=""))
 
       #if(FMSY_M.in[1]<0 & BMSY_B0.in[1]<0)
-        if(FMSY_M.in[1]<0 & BMSY_B0.in[1]<0&abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]==0&Quant.out[i,14]<100000){i<-i+1}
+        if(FMSY_M.in[1]<0 & BMSY_B0.in[1]<0&abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]<0.0001&Quant.out[i,14]<100000){i<-i+1}
       #if(FMSY_M.in[1]>=0 & BMSY_B0.in[1]>=0 | h.in[1]==99 | BH_FMSY_comp==T)
         if(FMSY_M.in[1]>=0 & BMSY_B0.in[1]>=0 | h.in[1]==99 | BH_FMSY_comp==T)
           {
             if(h.in[1]==99)
               {
-                if(abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]==0&Quant.out[i,14]<100000&(abs(Quant.out[i,18]-Input.draws.MQs[i,3])/Input.draws.MQs[i,3])<0.6){i<-i+1}
+                if(abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]<0.0001&Quant.out[i,14]<100000&(abs(Quant.out[i,18]-Input.draws.MQs[i,3])/Input.draws.MQs[i,3])<0.6){i<-i+1}
                 #if(abs(Quant.out[i,22]-Quant.out[i,23])>0.01&Quant.out[i,28]!=0&Quant.out[i,14]>100000&(abs(Quant.out[i,18]-Input.draws.MQs[i,3])/Input.draws.MQs[i,3])>0.6)
                 else
                   {
@@ -681,7 +681,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
 
             else
             {
-              if(abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]==0&Quant.out[i,14]<100000&(abs(Quant.out[i,16]-(Input.draws.MQs[i,2])/100)/(Input.draws.MQs[i,2]/100))<0.5){i<-i+1}
+              if(abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]<0.0001&Quant.out[i,14]<100000&(abs(Quant.out[i,16]-(Input.draws.MQs[i,2])/100)/(Input.draws.MQs[i,2]/100))<0.5){i<-i+1}
               #if(abs(Quant.out[i,22]-Quant.out[i,23])>0.01&Quant.out[i,28]!=0&Quant.out[i,14]>100000&(abs(Quant.out[i,16]-(Input.draws.MQs[i,2])/100)/(Input.draws.MQs[i,2]/100))>0.5)
               else
                 {
@@ -713,7 +713,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
     
     if(Dep.in[1]<0)
     {
-      if(Quant.out[i,28]==0&Quant.out[i,14]<100000){i<-i+1}
+      if(Quant.out[i,28]<0.0001&Quant.out[i,14]<100000){i<-i+1}
       else
       {
         #Run using .par file if above conditions not met
@@ -770,7 +770,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
         par_line[1]<-0
         starter.new[grep("ss.par",starter.new)]<-paste(par_line, collapse=" ")
         write(starter.new,paste(filepath,"/starter.ss",sep=""))
-        if(Quant.out[i,28]==0&Quant.out[i,14]<100000){i<-i+1}
+        if(Quant.out[i,28]<0.0001&Quant.out[i,14]<100000){i<-i+1}
         else
         {
           if(n.bad==0){Quant.out.bad<-Quant.out[i,]}
