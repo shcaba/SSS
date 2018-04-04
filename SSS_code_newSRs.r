@@ -57,6 +57,28 @@ rbeta.ab <- function(n, m, s, a, b)
   return(b.out)
 }
 
+
+#Convert 
+r.beta.solve<-function(sd.init,mean.init,mean.match,sd.match,seedit,logn=T)
+{
+  set.seed(seedit)
+  tbeta<-rbeta.ab(100000,mean.init,sd.init,0.99,0.01)
+  if(logn==T){log_ns<-rlnorm(1000000,log(mean.match),sd.match)}
+  if(logn==F){log_ns<-rtnorm(1000000,mean.match,sd.match)}
+  mean.diff<-abs(mean(1-log_ns)-mean(tbeta))
+  sd.diff<-abs(sd(1-log_ns)-sd(tbeta))
+  med.diff<-abs(median(1-log_ns)-median(tbeta))
+  obj<-mean.diff+sd.diff+med.diff
+  return(obj)
+}
+
+opt.sd.prof<-function(mean.val,mean.match,sd.match,seedit,logn=T)
+{
+  obj.best<-optimize(r.beta.solve,c(0, 0.6), tol = 0.0001,mean.init=mean.val,mean.match=mean.match,sd.match=sd.match,seedit=seedit,logn=logn)[[1]]
+  return(obj.best)
+}
+
+
 RUN.SS<-function(path, ss.exe="ss",ss.cmd=" -nohess -nox")
 {
   navigate <- paste("cd ",path,sep="")
