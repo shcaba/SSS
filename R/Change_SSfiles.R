@@ -1,8 +1,8 @@
 ##' Change SS files
-##' @param main.dir
+##' @param main.dir main directory 
 ##' @param sppname.in species name
-##' @param file.make
-##' @param starter.par switch to use the par file
+##' @param file.make vector that controls whether or not files are copied. Expected vector is c(par file, forecast file, data file, control file, ss executable). Value can be 1 = copy file. or 0 = do not copy
+##' @param starter.par Y/N switch to use the par file
 ##' @author Jason Cope
 ##' @export
 

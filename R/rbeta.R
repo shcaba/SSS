@@ -1,9 +1,9 @@
 ##' Beta function
-##' @param n
-##' @param m
-##' @param s
-##' @param a
-##' @param b
+##' @param n Number of iteration
+##' @param m mean value
+##' @param s standard deviaiton
+##' @param a Lower bound
+##' @param b Upper bound 
 ##' @author Jason Cope
 ##' @export
 

@@ -1,5 +1,5 @@
 ##' Random lognormal
-##' @param n sample numbr
+##' @param n number of draws
 ##' @param mean
 ##' @param sd
 ##' @param lower lower bound

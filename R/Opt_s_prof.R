@@ -1,6 +1,6 @@
 ##' Solve for the SD to match rbeta to either lognormal or truncated normal
-##' @param mean.val
-##' @param mean.match
+##' @param mean.val mean value 
+##' @param mean.match 
 ##' @param sd.match
 ##' @param seedit
 ##' @param logn
