@@ -1,3 +1,11 @@
+##' This file contails all the SSS code and associated functions
+##' @author Jason Cope and Chantel Wetzel
+##' @export
+##' @import msm
+##' @import EnvStats
+##' @import r4ss
+
+
 require(msm)
 require(EnvStats)
 #################
