@@ -6,100 +6,16 @@
 ##' @import r4ss
 
 
-require(msm)
-require(EnvStats)
-#################
-### Functions ###
-#################
-#1 = par file
-#2 = forecastfile
-#3 = data file
-#4 = ctl file
-#5 = SS.exe
-Change.SSfiles<-function(main.dir,sppname.in,file.make=c(1,1,1,1,1),starter.par="N")
-
-{
-  for(i in 1:length(sppname.in))
-  {
-    if(file.make[1]==1)
-    {
-      if(starter.par=="N"){file.copy(from=paste(main.dir,"/baseSSfiles/starterfiles/",sppname.in[i],"_starter.ss",sep=""),to=paste(main.dir,"/",sppname.in[i],"/starter.SS",sep=""),overwrite=TRUE)}
-      if(starter.par=="Y"){file.copy(from=paste(main.dir,"/baseSSfiles/starterfilespar/",sppname.in[i],"_starter.ss",sep=""),to=paste(main.dir,"/",sppname.in[i],"/starter.SS",sep=""),overwrite=TRUE)}
-    }
-    if(file.make[2]==1){file.copy(from=paste(main.dir,"/baseSSfiles/forecastfiles/",sppname.in[i],"_forecast.ss",sep=""),to=paste(main.dir,"/",sppname.in[i],"/forecast.SS",sep=""),overwrite=TRUE)}
-    if(file.make[3]==1){file.copy(from=paste(main.dir,"/baseSSfiles/datfiles/",sppname.in[i],".dat",sep=""),to=paste(main.dir,"/",sppname.in[i],"/",sppname.in[i],".dat",sep=""),overwrite=TRUE)}
-    if(file.make[4]==1){file.copy(from=paste(main.dir,"/baseSSfiles/ctlfiles/",sppname.in[i],".ctl",sep=""),to=paste(main.dir,"/",sppname.in[i],"/",sppname.in[i],".ctl",sep=""),overwrite=TRUE)}
-    if(file.make[5]==1){file.copy(from=paste(main.dir,"/baseSSfiles/ss.exe",sep=""),to=paste(main.dir,"/",sppname.in[i],"/ss.exe",sep=""),overwrite=TRUE)}
-  }
-}
-
-# rtlnorm <- function (n, mean = 0, sd = 1, lower = -Inf, upper = Inf)
-# {
-#   ret <- numeric()
-#   if (length(n) > 1)
-#     n <- length(n)
-#   while (length(ret) < n) {
-#     y <- rlnorm(n - length(ret), mean, sd)
-#     y <- y[y >= lower & y <= upper]
-#     ret <- c(ret, y)
-#   }
-#   stopifnot(length(ret) == n)
-#   ret
-# }
-
-rbeta.ab <- function(n, m, s, a, b)
-{
-  # calculate mean of corresponding standard beta dist
-  mu.std <- (m-a)/(b-a)
-
-  # calculate parameters of std. beta with mean=mu.std and sd=s
-  alpha <- (mu.std^2 - mu.std^3 - mu.std*s^2) / s^2
-  beta  <- (mu.std - 2*mu.std^2 + mu.std^3 - s^2 + mu.std*s^2) / s^2
-
-  # generate n draws from standard beta
-  b.std <- rbeta(n, alpha, beta)
-
-  # linear transformation from beta(0,1) to beta(a,b)
-  b.out <- (b-a)*b.std + a
-
-  return(b.out)
-}
-
-
-#Objective function used to match SD from beta to either lognormal or truncated normal
-r.beta.solve<-function(sd.init,mean.init,mean.match,sd.match,seedit,logn=T)
-{
-  set.seed(seedit)
-  tbeta<-rbeta.ab(100000,mean.init,sd.init,0.99,0.01)
-  if(logn==T){log_ns<-rlnorm(1000000,log(mean.match),sd.match)}
-  if(logn==F){log_ns<-rtnorm(1000000,mean.match,sd.match)}
-  mean.diff<-abs(mean(log_ns)-mean(tbeta))
-  sd.diff<-abs(sd(log_ns)-sd(tbeta))
-  med.diff<-abs(median(log_ns)-median(tbeta))
-  obj<--(mean.diff+sd.diff+med.diff)
-  return(obj)
-}
-
-#Solve for the SD to match rbeta to either lognormal or truncated normal
-opt.s.prof<-function(mean.val,mean.match,sd.match,seedit,logn=T)
-{
-  obj.best<-optimize(r.beta.solve,c(0, 0.6), tol = 0.0001,mean.init=mean.val,mean.match=mean.match,sd.match=sd.match,seedit=seedit,logn=logn)[[1]]
-  return(obj.best)
-}
-
-
-RUN.SS<-function(path, ss.exe="ss",ss.cmd=" -nohess -nox")
-{
-  navigate <- paste("cd ",path,sep="")
-  command <- paste(navigate," & ",ss.exe,ss.cmd,sep="")
-  shell(command,invisible=TRUE,translate=TRUE)
-}
 
 
 SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c(3,0.1,0.4,3,0.1,0.4),SR_type=3,h.in=c(1,0.6,0.2),FMSY_M.in=c(1,0.5,0.1),
   BMSY_B0.in=c(1,0.5,0.1),L1.in=c(0,0,0,0),Linf.in=c(0,0,0,0),k.in=c(0,0,0,0),Zfrac.Beta.in=c(-99,0.2,0.6,-99,0.5,2),R_start=c(0,8),doR0.loop=c(1,4.1,12.1,0.5),
   sum_age=0,sb_ofl_yrs=c(2010,2011,2012),f_yr=2012,year0=1916,genders=F,BH_FMSY_comp=F)
 {
+
+  require(msm)
+  require(EnvStats)
+
   set.seed(seed.in)
   start.time<-Sys.time()
   Spp.quant.out<-list()
