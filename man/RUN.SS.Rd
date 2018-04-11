@@ -6,6 +6,13 @@
 \usage{
 RUN.SS(path, ss.exe = "ss", ss.cmd = " -nohess -nox")
 }
+\arguments{
+\item{path}{location of the executable}
+
+\item{ss.exe}{executable name for ss (e.g., "ss")}
+
+\item{ss.cmd}{command line input used when running SS}
+}
 \description{
 Run SS function
 }

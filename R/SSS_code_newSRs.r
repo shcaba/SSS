@@ -4,8 +4,7 @@
 ##' @param reps number of mcmc draws to perform
 ##' @param seed.in seed number 
 ##' @param Dep.in vector defining distribution, mean, sd, and bounds for depletion prior.  Expected input is c(distribution shape, mean, sd). The distribution options are 2 = 1 - beta, 4 = uniform, 10 = truncated normal.
-##' @param M.in vector defining natural mortality distribuition, mean, and . Expected input is c(distrbution shape for females, mean for females, sd for females, distribution shape for males, mean for males, sd for males)
-##' The distibution options are 0 = normal, 3 = lognormal, and 4 = uniform.
+##' @param M.in vector defining natural mortality distribuition, mean, and . Expected input is c(distrbution shape for females, mean for females, sd for females, distribution shape for males, mean for males, sd for males). The distibution options are 0 = normal, 3 = lognormal, and 4 = uniform.
 ##' @param SR_type The shape of the stock-recruitment curve. Options are based on SS stock-recruit options. Option 3 = Beverton-holt, 8 = Shepherd 3-parameter, 9 = Ricker 3-parameter
 ##' @param h.in vector defining the steepness distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.
 ##' @param FMSY_M.in vector defining the Fmsy/M ratio distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are; negative value = ?, 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.
@@ -24,9 +23,7 @@
 ##' @param BH_FMSY_comp
 ##' @author Jason Cope and Chantel Wetzel
 ##' @export
-##' \code{\link{Opt_s_prof}}, \code{\link{Change_SSfiles.R}},
-##' \code{\link{rbeta}}, \code{\link{rbeta_solve}},
-##' \code{\link{rtlnorm}}, \code{\link{Run_ss}},
+##' \code{\link{Opt_s_prof}}, \code{\link{Change_SSfiles.R}}, \code{\link{rbeta}}, \code{\link{rbeta_solve}}, \code{\link{rtlnorm}}, \code{\link{Run_ss}},
 ##' @import msm
 ##' @import EnvStats
 ##' @import r4ss

@@ -6,6 +6,17 @@
 \usage{
 rbeta.ab(n, m, s, a, b)
 }
+\arguments{
+\item{n}{Number of iteration}
+
+\item{m}{mean value}
+
+\item{s}{standard deviaiton}
+
+\item{a}{Lower bound}
+
+\item{b}{Upper bound}
+}
 \description{
 Beta function
 }

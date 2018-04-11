@@ -13,9 +13,43 @@ SSS(filepath, file.name, reps = 1000, seed.in = 19, Dep.in = c(1, 0.4,
   2011, 2012), f_yr = 2012, year0 = 1916, genders = F, BH_FMSY_comp = F)
 }
 \arguments{
-\item{fmsy.m.in}{NOT YET FULLY IMPLEMENTED}
+\item{filepath}{location where the SSS will look for model files and run the executable}
 
-\item{bmsy.b0.in}{NOT YET FULLY IMPLEMENTED}
+\item{file.name}{vector of file names for the data and control file where the expected input is c("data file", "control file")}
+
+\item{reps}{number of mcmc draws to perform}
+
+\item{seed.in}{seed number}
+
+\item{Dep.in}{vector defining distribution, mean, sd, and bounds for depletion prior.  Expected input is c(distribution shape, mean, sd). The distribution options are 2 = 1 - beta, 4 = uniform, 10 = truncated normal.}
+
+\item{M.in}{vector defining natural mortality distribuition, mean, and . Expected input is c(distrbution shape for females, mean for females, sd for females, distribution shape for males, mean for males, sd for males). The distibution options are 0 = normal, 3 = lognormal, and 4 = uniform.}
+
+\item{SR_type}{The shape of the stock-recruitment curve. Options are based on SS stock-recruit options. Option 3 = Beverton-holt, 8 = Shepherd 3-parameter, 9 = Ricker 3-parameter}
+
+\item{h.in}{vector defining the steepness distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.}
+
+\item{FMSY_M.in}{vector defining the Fmsy/M ratio distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are; negative value = ?, 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.}
+
+\item{BMSY_B0.in}{vector defining the Bmsy/B0 ratio distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are; negative value = ?, 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.}
+
+\item{L1.in}{vector defining the minimum length. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)}
+
+\item{Linf.in}{vector defining the maximum length. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)}
+
+\item{k.in}{vector defining the growth coefficient k. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)}
+
+\item{R_start}{vector allowing the user to control the starting R0 value in the control file. Expected value is c( switch option, input value) where the switch optionas are 1= draw from a random draw from a truncated lognormal distribution based on the input value and 0 = start from the input value.}
+
+\item{sum_age}{summary age for total biomass calculation used by SS}
+
+\item{sb_ofl_yrs}{the years for which OFL values should be calculated}
+
+\item{f_yr}{final model year}
+
+\item{year0}{initial model year}
+
+\item{genders}{TRUE/FALSE allows for the user to specify whether or not sexes should have the same values from drawn parameters (e.g., natural mortality, L1, Linf)}
 }
 \description{
 This file contails all the SSS code

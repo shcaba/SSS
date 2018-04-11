@@ -6,6 +6,11 @@
 \usage{
 opt.s.prof(mean.val, mean.match, sd.match, seedit, logn = T)
 }
+\arguments{
+\item{mean.val}{mean value}
+
+\item{mean.match}{}
+}
 \description{
 Solve for the SD to match rbeta to either lognormal or truncated normal
 }

@@ -8,9 +8,13 @@ Change.SSfiles(main.dir, sppname.in, file.make = c(1, 1, 1, 1, 1),
   starter.par = "N")
 }
 \arguments{
+\item{main.dir}{main directory}
+
 \item{sppname.in}{species name}
 
-\item{starter.par}{switch to use the par file}
+\item{file.make}{vector that controls whether or not files are copied. Expected vector is c(par file, forecast file, data file, control file, ss executable). Value can be 1 = copy file. or 0 = do not copy}
+
+\item{starter.par}{Y/N switch to use the par file}
 }
 \description{
 Change SS files

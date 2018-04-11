@@ -7,7 +7,7 @@
 rtlnorm(n, mean = 0, sd = 1, lower = -Inf, upper = Inf)
 }
 \arguments{
-\item{n}{sample numbr}
+\item{n}{number of draws}
 
 \item{lower}{lower bound}
 
