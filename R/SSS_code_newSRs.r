@@ -1,16 +1,59 @@
-##' This file contails all the SSS code and associated functions
+##' This file contails all the SSS code 
+##' @param filepath
+##' @param file.name
+##' @param reps
+##' @param seed.in
+##' @param Dep.in
+##' @param M.in
+##' @param SR_type
+##' @param h.in
+##' @param FMSY_M.in
+##' @param BMSY_B0.in
+##' @param L1.in
+##' @param Linf.in
+##' @param k.in
+##' @param Zfrac.Beta.in
+##' @param R_start
+##' @param doR0.loop
+##' @param sum_age
+##' @param sb_ofl_yrs
+##' @param f_yr
+##' @param year0
+##' @param genders
+##' @param BH_FMSY_comp
+##' @param fmsy.m.in NOT YET FULLY IMPLEMENTED
+##' @param bmsy.b0.in NOT YET FULLY IMPLEMENTED
 ##' @author Jason Cope and Chantel Wetzel
 ##' @export
+##' \code{\link{Opt_s_prof}}, \code{\link{Change_SSfiles.R}},
+##' \code{\link{rbeta}}, \code{\link{rbeta_solve}},
+##' \code{\link{rtlnorm}}, \code{\link{Run_ss}},
 ##' @import msm
 ##' @import EnvStats
 ##' @import r4ss
 
-
-
-
-SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c(3,0.1,0.4,3,0.1,0.4),SR_type=3,h.in=c(1,0.6,0.2),FMSY_M.in=c(1,0.5,0.1),
-  BMSY_B0.in=c(1,0.5,0.1),L1.in=c(0,0,0,0),Linf.in=c(0,0,0,0),k.in=c(0,0,0,0),Zfrac.Beta.in=c(-99,0.2,0.6,-99,0.5,2),R_start=c(0,8),doR0.loop=c(1,4.1,12.1,0.5),
-  sum_age=0,sb_ofl_yrs=c(2010,2011,2012),f_yr=2012,year0=1916,genders=F,BH_FMSY_comp=F)
+SSS<-function(filepath,
+              file.name,
+              reps=1000,
+              seed.in=19,
+              Dep.in=c(1,0.4,0.1),
+              M.in=c(3,0.1,0.4,3,0.1,0.4),
+              SR_type=3,
+              h.in=c(1,0.6,0.2),
+              FMSY_M.in=c(1,0.5,0.1),
+              BMSY_B0.in=c(1,0.5,0.1),
+              L1.in=c(0,0,0,0),
+              Linf.in=c(0,0,0,0),
+              k.in=c(0,0,0,0),
+              Zfrac.Beta.in=c(-99,0.2,0.6,-99,0.5,2),
+              R_start=c(0,8),
+              doR0.loop=c(1,4.1,12.1,0.5),
+              sum_age=0,
+              sb_ofl_yrs=c(2010,2011,2012),
+              f_yr=2012,
+              year0=1916,
+              genders=F,
+              BH_FMSY_comp=F)
 {
 
   require(msm)
