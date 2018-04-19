@@ -23,7 +23,7 @@
 ##' @param BH_FMSY_comp
 ##' @author Jason Cope and Chantel Wetzel
 ##' @export
-##' \code{\link{Opt_s_prof}}, \code{\link{Change_SSfiles.R}}, \code{\link{rbeta}}, \code{\link{rbeta_solve}}, \code{\link{rtlnorm}}, \code{\link{Run_ss}},
+##' @seealso \code{\link{Opt_s_prof}}, \code{\link{Change_SSfiles}}, \code{\link{rbeta}}, \code{\link{rbeta_solve}}, \code{\link{rtlnorm}}, \code{\link{Run_SS}},
 ##' @import msm
 ##' @import EnvStats
 ##' @import r4ss

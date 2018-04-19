@@ -54,6 +54,9 @@ SSS(filepath, file.name, reps = 1000, seed.in = 19, Dep.in = c(1, 0.4,
 \description{
 This file contails all the SSS code
 }
+\seealso{
+\code{\link{Opt_s_prof}}, \code{\link{Change_SSfiles}}, \code{\link{rbeta}}, \code{\link{rbeta_solve}}, \code{\link{rtlnorm}}, \code{\link{Run_SS}},
+}
 \author{
 Jason Cope and Chantel Wetzel
 }
