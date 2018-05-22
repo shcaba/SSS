@@ -465,16 +465,16 @@ SSS<-function(filepath,
     #change h
     if(h.in[1]>=0)
     {
-      h.line<-strsplit(ctl.new[grep("SR_steep",ctl.new)], " ")[[1]]
+      h.line<-strsplit(ctl.new[grep("steep",ctl.new)], " ")[[1]]
       h.line[c(3,4)]<-h.draw
-      ctl.new[grep("SR_steep",ctl.new)]<-paste(h.line,collapse=" ")
+      ctl.new[grep("steep",ctl.new)]<-paste(h.line,collapse=" ")
     }
     
     if(SR_type>=8)
     {
-      h.line<-strsplit(ctl.new[grep("SR_steep",ctl.new)], " ")[[1]]
+      h.line<-strsplit(ctl.new[grep("steep",ctl.new)], " ")[[1]]
       h.line[c(3,4)]<-h.draw
-      ctl.new[grep("SR_steep",ctl.new)]<-paste(h.line,collapse=" ")
+      ctl.new[grep("steep",ctl.new)]<-paste(h.line,collapse=" ")
       SRexpo.line<-strsplit(ctl.new[grep("SR_Beta",ctl.new)], " ")[[1]]
       SRexpo.line[c(3,4)]<-SR_expo.out[i]
       ctl.new[grep("SR_Beta",ctl.new)]<-paste(SRexpo.line,collapse=" ")
