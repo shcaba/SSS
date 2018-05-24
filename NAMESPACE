@@ -3,7 +3,7 @@
 export(Change.SSfiles)
 export(RUN.SS)
 export(SSS)
-export(opt.s.prof)
+export(opt.sd.prof)
 export(r.beta.solve)
 export(rbeta.ab)
 export(rtlnorm)
