@@ -480,7 +480,7 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
     }
     
     SRtype.line<-strsplit(ctl.new[grep("SR_function",ctl.new)], " ")[[1]]
-    SRtype.line[1]<-SR_type
+    SRtype.line[1]<-SR_types
     ctl.new[grep("SR_function",ctl.new)]<-paste(SRtype.line,collapse=" ")
     #change R0
     if(R_start[1]==1)
@@ -502,16 +502,16 @@ SSS<-function(filepath,file.name,reps=1000,seed.in=19,Dep.in=c(1,0.4,0.1),M.in=c
     #change h
     if(h.in[1]>=0)
     {
-      h.line<-strsplit(ctl.new[grep("steep",ctl.new)], " ")[[1]]
+      h.line<-strsplit(ctl.new[grep("SR_steep",ctl.new)], " ")[[1]]
       h.line[c(3,4)]<-h.draw
-      ctl.new[grep("steep",ctl.new)]<-paste(h.line,collapse=" ")
+      ctl.new[grep("SR_steep",ctl.new)]<-paste(h.line,collapse=" ")
     }
     
     if(SR_type>=8)
     {
-      h.line<-strsplit(ctl.new[grep("steep",ctl.new)], " ")[[1]]
+      h.line<-strsplit(ctl.new[grep("SR_steep",ctl.new)], " ")[[1]]
       h.line[c(3,4)]<-h.draw
-      ctl.new[grep("steep",ctl.new)]<-paste(h.line,collapse=" ")
+      ctl.new[grep("SR_steep",ctl.new)]<-paste(h.line,collapse=" ")
       SRexpo.line<-strsplit(ctl.new[grep("SR_Beta",ctl.new)], " ")[[1]]
       SRexpo.line[c(3,4)]<-SR_expo.out[i]
       ctl.new[grep("SR_Beta",ctl.new)]<-paste(SRexpo.line,collapse=" ")
