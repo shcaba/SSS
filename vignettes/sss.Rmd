@@ -1,0 +1,36 @@
+---
+title: "Simple Stock Synthesis"
+author: "Jason Cope"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simple Stock Synthesis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Summary
+
+
+## Software requirements
+
+
+## Setting up a model
+
+
+## File structure
+
+## Data file
+
+## Control file
+
+## Forecast file
+
+## Starter file

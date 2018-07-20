@@ -1,0 +1,18 @@
+Package: sss
+Type: Package
+Title: Simple Stock Synthesis
+Version: 1.0.0
+Date: 2018-03-22
+Author: Jason Cope and Chantel Wetzel
+Maintainer: Jason Cope <jason.cope@noaa.gov>
+Description: Application of simple stock synthesis for data-limited assessment with index data.
+License: What license is it under?
+URL: https://github.com/shcaba/sss_package
+BugReports: https://github.com/shcaba/sss/issues
+Suggests:
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Depends:
+    R (>= 3.1.0)
+RoxygenNote: 6.0.1
