@@ -465,16 +465,16 @@ SSS<-function(filepath,
     #change h
     if(h.in[1]>=0)
     {
-      h.line<-strsplit(ctl.new[grep("SR_h_steep",ctl.new)], " ")[[1]]
+      h.line<-strsplit(ctl.new[grep("SR_BH_steep",ctl.new)], " ")[[1]]
       h.line[c(3,4)]<-h.draw
-      ctl.new[grep("SR_h_steep",ctl.new)]<-paste(h.line,collapse=" ")
+      ctl.new[grep("SR_BH_steep",ctl.new)]<-paste(h.line,collapse=" ")
     }
     
     if(SR_type>=8)
     {
-      h.line<-strsplit(ctl.new[grep("SR_h_steep",ctl.new)], " ")[[1]]
+      h.line<-strsplit(ctl.new[grep("SR_BH_steep",ctl.new)], " ")[[1]]
       h.line[c(3,4)]<-h.draw
-      ctl.new[grep("SR_h_steep",ctl.new)]<-paste(h.line,collapse=" ")
+      ctl.new[grep("SR_BH_steep",ctl.new)]<-paste(h.line,collapse=" ")
       SRexpo.line<-strsplit(ctl.new[grep("SR_Beta",ctl.new)], " ")[[1]]
       SRexpo.line[c(3,4)]<-SR_expo.out[i]
       ctl.new[grep("SR_Beta",ctl.new)]<-paste(SRexpo.line,collapse=" ")
@@ -558,7 +558,7 @@ SSS<-function(filepath,
       Quant.out[i,7]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Mal_GP_1",rep.new)], " ")[[1]][3])
       Quant.out[i,8]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Mal_GP_1",rep.new)], " ")[[1]][3])
     }
-    Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_h_steep",rep.new)], " ")[[1]][3])
+    Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])
     Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
     Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
     Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
@@ -731,7 +731,7 @@ SSS<-function(filepath,
         Quant.out[i,7]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Mal_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,8]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Mal_GP_1",rep.new)], " ")[[1]][3])
     }
-        Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_h_steep",rep.new)], " ")[[1]][3])
+        Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])
         Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
         Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
         Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])

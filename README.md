@@ -9,7 +9,7 @@ Simple Stock Synthesis (SSS) is an assessment method for application to data-lim
 install.packages("devtools")
 library(devtools)
 
-devtools::install_github("shcaba/SSS", ref = "sss_package", build_vignettes = TRUE)
+devtools::install_github("shcaba/SSS", build_vignettes = TRUE)
 ```
 
 Note: devtools may give this message: "*WARNING: Rtools is required to build R packages, but is not currently installed.*" However, Rtools is NOT required for installing xsss via devtools, so ignore the warning.
