@@ -90,7 +90,7 @@
 0  #  future feature:  0/1 to make realized sigmaR a function of SR curvature
 #_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn #  parm_name
 5 20 9 9 5 0 1 0 0 0 0 0 0 0 #SR_LN_R0
-0.2 1 0.444324 0.444324 0.15 2 -2 0 0 0	0 0	0 0	#	SR_steep
+0.2 1 0.444324 0.444324 0.15 2 -2 0 0 0	0 0	0 0	#	SR_h_steep
 0 10 1.1926 1.1926 -1 0.8 -4 0 0 0 0 0 0 0	#	SR_Beta
 0.5	1.2	0.7	0.7	99	0	-6	0	0	0	0	0	0	0	#	SR_sigmaR
 -5	5	0	0	99	0	-99	0	0	0	0	0	0	0	#	SR_regime

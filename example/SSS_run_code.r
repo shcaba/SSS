@@ -1,4 +1,5 @@
 #RUN SSS
+library(sss)
 Dir.in<-"C:/Users/"
 source(paste(Dir.in,"/SSS_code_newSRs.r",sep=""))
 #load(paste(Dir.in,"/Dep_sdmod_spp_in.DMP",sep=""))
