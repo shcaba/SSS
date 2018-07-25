@@ -550,7 +550,7 @@ SSS<-function(filepath,
     }
     if(SR_type<8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])}
     if(SR_type>=8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_steep",rep.new)], " ")[[1]][3])}
-    if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][23)}
+    if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][3])}
     Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
     Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
     Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
