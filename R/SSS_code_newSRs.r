@@ -23,7 +23,7 @@
 ##' @param BH_FMSY_comp
 ##' @author Jason Cope and Chantel Wetzel
 ##' @export
-##' @seealso \code{\link{Opt_s_prof}}, \code{\link{Change_SSfiles}}, \code{\link{rbeta}}, \code{\link{rbeta_solve}}, \code{\link{rtlnorm}}, \code{\link{Run_SS}},
+##' @seealso \code{\link{Opt_s_prof}}, \code{\link{Change_SSfiles}}, \code{\link{rbeta}}, \code{\link{rbeta_solve}}, \code{\link{rtlnorm}}, \code{\link{Run_SS}}, \code{\link{loadnnames}},
 ##' @import msm
 ##' @import EnvStats
 ##' @import r4ss
@@ -69,8 +69,8 @@ SSS<-function(filepath,
     colnames(Input.draws.MQs)<-c("FMSY/M","BMSY/B0","FMSY")
   }
   sb.years<-c(year0:sb_ofl_yrs[1])
-  Quant.out<-as.data.frame(matrix(NA,nrow=reps,ncol=28))
-  Quant.out.bad<-as.data.frame(matrix(NA,1,ncol=28))
+  Quant.out<-as.data.frame(matrix(NA,nrow=reps,ncol=29))
+  Quant.out.bad<-as.data.frame(matrix(NA,1,ncol=29))
   SB.out<-TB.out<-SumAge.out<-SPR.out<-as.data.frame(matrix(NA,nrow=reps,ncol=length(sb.years)))
   colnames(SB.out)<-colnames(TB.out)<-colnames(SumAge.out)<-colnames(SPR.out)<-sb.years
   
@@ -346,12 +346,9 @@ SSS<-function(filepath,
             RUN.SS(paste(filepath,"/h_BMSY_FMSY/",sep=""), ss.exe="BMSYB0",ss.cmd=" -nox > out.txt")
             }
           }
-        #print(c(steep_expo.out[1],steep_expo.out[2],SRMQ_par[i]>0.1))
-        #if(steep_expo.out[1]<0.25|steep_expo.out[1]>=1|steep_expo.out[2]>10|SRMQ_par[i]>0.1){x<-1}
         if(steep_expo.out[1]>=0.25&steep_expo.out[1]<1&steep_expo.out[2]<=10&SRMQ_par[i]<0.1){x<-2}          
         }
       }
-      #print(SRMQ_par[i])
       Input.draws[i,1]<-h.draw<-steep_expo.out[1]
       SR_expo.out[i]<-steep_expo.out[2]
       file.remove(paste(filepath,"/h_BMSY_FMSY/bmsyb0.rep",sep=""))
@@ -463,7 +460,7 @@ SSS<-function(filepath,
     
 
     #change h
-    if(h.in[1]>=0)
+    if(SR_type<8)
     {
       h.line<-strsplit(ctl.new[grep("SR_BH_steep",ctl.new)], " ")[[1]]
       h.line[c(3,4)]<-h.draw
@@ -472,12 +469,12 @@ SSS<-function(filepath,
     
     if(SR_type>=8)
     {
-      h.line<-strsplit(ctl.new[grep("SR_BH_steep",ctl.new)], " ")[[1]]
+      h.line<-strsplit(ctl.new[grep("SR_RkrPower_steep",ctl.new)], " ")[[1]]
       h.line[c(3,4)]<-h.draw
-      ctl.new[grep("SR_BH_steep",ctl.new)]<-paste(h.line,collapse=" ")
-      SRexpo.line<-strsplit(ctl.new[grep("SR_Beta",ctl.new)], " ")[[1]]
+      ctl.new[grep("SR_RkrPower_steep",ctl.new)]<-paste(h.line,collapse=" ")
+      SRexpo.line<-strsplit(ctl.new[grep("SR_RkrPower_gamma",ctl.new)], " ")[[1]]
       SRexpo.line[c(3,4)]<-SR_expo.out[i]
-      ctl.new[grep("SR_Beta",ctl.new)]<-paste(SRexpo.line,collapse=" ")
+      ctl.new[grep("SR_RkrPower_gamma",ctl.new)]<-paste(SRexpo.line,collapse=" ")
     }  
     
     #change Sfrac and Beta
@@ -507,8 +504,6 @@ SSS<-function(filepath,
     if(doR0.loop[1]>0)
     {
         xx<-1
-        #if(doR0.loop[1]==1){R0.explore<-seq(doR0.loop[2],doR0.loop[3],0.5)}
-        #if(doR0.loop[1]==2){R0.explore<-seq(doR0.loop[2],doR0.loop[3],-0.5)}
         R0.explore<-seq(doR0.loop[2],doR0.loop[3],doR0.loop[4])
         if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==TRUE){Dep.out.testR0<-10}
         if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==FALSE){Dep.out.testR0<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])}
@@ -518,23 +513,18 @@ SSS<-function(filepath,
         print(paste0("IN THE LOOP: R0= ",R0.explore[xx]))
         ctl.new<-readLines(paste(filepath,"/",file.name[2],sep=""))
         R0.line<-strsplit(ctl.new[grep("R0",ctl.new)], " ")[[1]]
-        #R0.draw<-round(rlnormTrunc(1,log(R_start[2]),0.5,4,12),2)
-        #R0.explore<-seq(5,11,0.5)
         R0.line[c(3,4)]<-R0.explore[xx]
-        #print(R0.explore[xx])
         ctl.new[grep("R0",ctl.new)]<-paste(R0.line,collapse=" ")
         write(ctl.new,paste(filepath,"/",file.name[2],sep=""))
         RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")
         rep.new<-readLines(paste(filepath,"/Report.sso",sep=""))
         if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==TRUE){Dep.out.testR0<-10}
         if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==FALSE){Dep.out.testR0<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])}
-        #print(abs(as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8])))
         print(paste0("Is depletion difference < 0.01? ",(abs(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])-Dep.draw)<0.01)))
         xx<-xx+1
         if(xx==length(R0.explore)){break}
       }
     }
-    #print(FMSY_M.in[i])
     
     #Begin extracting info from run
     forecast.file<-readLines(paste(filepath,"/Forecast-report.sso",sep=""))
@@ -558,7 +548,8 @@ SSS<-function(filepath,
       Quant.out[i,7]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Mal_GP_1",rep.new)], " ")[[1]][3])
       Quant.out[i,8]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Mal_GP_1",rep.new)], " ")[[1]][3])
     }
-    Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])
+    if(SR_type<8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])}
+    if(SR_type>=8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_steep",rep.new)], " ")[[1]][3])}
     Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
     Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
     Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
@@ -573,85 +564,24 @@ SSS<-function(filepath,
     Quant.out[i,21]<-as.numeric(strsplit(rep.new[grep("Convergence",rep.new)], " ")[[1]][2])
     if(Dep.in[1]>=0){Quant.out[i,22]<-as.numeric(Dep.line[4])}
     if(Dep.in[1]>=0){Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])}
-    #    if(Dep.in[1]>=0){Quant.out[i,22]<-as.numeric(strsplit(rep.new[grep(paste(fleet_num,"_SURVEY1 ",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][5])}
-    #    if(Dep.in[1]>=0){Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste(fleet_num,"_SURVEY1 ",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][6])}
     Quant.out[i,24]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8])
     Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",f_yr,sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
     Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
+    if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][2])}
     warnings.out<-readLines(paste(filepath,"/warning.sso",sep=""))
     num.warning<-as.numeric(strsplit(warnings.out[grep("N warnings",warnings.out)[1]], " ")[[1]][4])
     
     if(Dep.in[1]>=0)
     {
-      # if(FMSY_M.in[1]<0 & BMSY_B0.in[1]<0&abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]==0&Quant.out[i,14]<100000){i<-i+1}
-      # if(FMSY_M.in[1]>=0 & BMSY_B0.in[1]>=0 | h.in[1]==99 | BH_FMSY_comp==T)
-      #     {
-      #       if(h.in[1]==99){if(abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]==0&Quant.out[i,14]<100000&(abs(Quant.out[i,18]-Input.draws.MQs[i,3])/Input.draws.MQs[i,3])<0.6){i<-i+1}}
-      #       else{if(abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]==0&Quant.out[i,14]<100000&(abs(Quant.out[i,16]-(Input.draws.MQs[i,2])/100)/(Input.draws.MQs[i,2]/100))<0.5){i<-i+1}}
-      #     }
-      #    else
-      # {
-        #Run using .par file if above conditions not met
-        # print("*** RUNNING WITH .PAR ***")
-        # starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
-        # sum_age_line<-strsplit(starter.new[grep("ss.par",starter.new)], " ")[[1]]
-        # sum_age_line[1]<-1
-        # starter.new[grep("ss.par",starter.new)]<-paste(sum_age_line, collapse=" ")
-        # write(starter.new,paste(filepath,"/starter.ss",sep=""))
-        # RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")
-        # rep.new<-readLines(paste(filepath,"/Report.sso",sep=""))
-        # forecast.file<-readLines(paste(filepath,"/Forecast-report.sso",sep=""))
-        # for(iii in 1:length(year0:sb_ofl_yrs[1])){SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])}
-        # Dep.series.out<-SB.out/SB.out[,1]
-        # Quant.out[i,1]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Fem_GP_1",rep.new)], " ")[[1]][3])
-        # Quant.out[i,2]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Fem_GP_1",rep.new)], " ")[[1]][3])
-        # Quant.out[i,3]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Fem_GP_1",rep.new)], " ")[[1]][3])
-        # Quant.out[i,4]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Fem_GP_1",rep.new)], " ")[[1]][3])
-        # Quant.out[i,5]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Mal_GP_1",rep.new)], " ")[[1]][3])
-        # Quant.out[i,6]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Mal_GP_1",rep.new)], " ")[[1]][3])
-        # Quant.out[i,7]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Mal_GP_1",rep.new)], " ")[[1]][3])
-        # Quant.out[i,8]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Mal_GP_1",rep.new)], " ")[[1]][3])
-        # Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("steep",rep.new)], " ")[[1]][3])
-        # Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
-        # Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
-        # Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
-        # Quant.out[i,13]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
-        # Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
-        # Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
-        # Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
-        # Quant.out[i,17]<-as.numeric(strsplit(forecast.file[grep("calculate_FMSY",forecast.file)+13],split="[[:blank:]]+")[[1]][2])/as.numeric(strsplit(forecast.file[grep("BIO_Smry_unfished",forecast.file)],split="[[:blank:]]+")[[1]][2])
-        # Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
-        # Quant.out[i,19]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)], " ")[[1]][2])
-        # Quant.out[i,20]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)+2], " ")[[1]][2])
-        # Quant.out[i,21]<-as.numeric(strsplit(rep.new[grep("Convergence",rep.new)], " ")[[1]][2])
-        # Quant.out[i,22]<-as.numeric(Dep.line[4])
-        # Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])
-        # #        if(Dep.in[1]>=0){Quant.out[i,22]<-as.numeric(Dep.line[4])}
-        # #        if(Dep.in[1]>=0){Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])}
-        # #        if(Dep.in[1]>=0){Quant.out[i,22]<-as.numeric(strsplit(rep.new[grep(paste(fleet_num,"_SURVEY1 ",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][5])}
-        # #        if(Dep.in[1]>=0){Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste(fleet_num,"_SURVEY1 ",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][6])}
-        # Quant.out[i,24]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8])
-        # Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",f_yr,sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
-        # Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
-        # Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
-        # Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
-        # starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
-        # sum_age_line<-strsplit(starter.new[grep("ss.par",starter.new)], " ")[[1]]
-        # sum_age_line[1]<-0
-        # starter.new[grep("ss.par",starter.new)]<-paste(sum_age_line, collapse=" ")
-        # write(starter.new,paste(filepath,"/starter.ss",sep=""))
 
-      #if(FMSY_M.in[1]<0 & BMSY_B0.in[1]<0)
         if(FMSY_M.in[1]<0 & BMSY_B0.in[1]<0&abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]<0.0001&Quant.out[i,14]<100000){i<-i+1}
-      #if(FMSY_M.in[1]>=0 & BMSY_B0.in[1]>=0 | h.in[1]==99 | BH_FMSY_comp==T)
         if(FMSY_M.in[1]>=0 & BMSY_B0.in[1]>=0 | h.in[1]==99 | BH_FMSY_comp==T)
           {
             if(h.in[1]==99)
               {
                 if(abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]<0.0001&Quant.out[i,14]<100000&(abs(Quant.out[i,18]-Input.draws.MQs[i,3])/Input.draws.MQs[i,3])<0.6){i<-i+1}
-                #if(abs(Quant.out[i,22]-Quant.out[i,23])>0.01&Quant.out[i,28]!=0&Quant.out[i,14]>100000&(abs(Quant.out[i,18]-Input.draws.MQs[i,3])/Input.draws.MQs[i,3])>0.6)
                 else
                   {
                     if(n.bad==0){Quant.out.bad<-Quant.out[i,]}
@@ -668,7 +598,6 @@ SSS<-function(filepath,
             else
             {
               if(abs(Quant.out[i,22]-Quant.out[i,23])<0.01&Quant.out[i,28]<0.0001&Quant.out[i,14]<100000&(abs(Quant.out[i,16]-(Input.draws.MQs[i,2])/100)/(Input.draws.MQs[i,2]/100))<0.5){i<-i+1}
-              #if(abs(Quant.out[i,22]-Quant.out[i,23])>0.01&Quant.out[i,28]!=0&Quant.out[i,14]>100000&(abs(Quant.out[i,16]-(Input.draws.MQs[i,2])/100)/(Input.draws.MQs[i,2]/100))>0.5)
               else
                 {
                    if(n.bad==0){Quant.out.bad<-Quant.out[i,]}
@@ -731,7 +660,8 @@ SSS<-function(filepath,
         Quant.out[i,7]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Mal_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,8]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Mal_GP_1",rep.new)], " ")[[1]][3])
     }
-        Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])
+        if(SR_type<8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])}
+        if(SR_type>=8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_steep",rep.new)], " ")[[1]][3])}
         Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
         Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
         Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
@@ -751,6 +681,7 @@ SSS<-function(filepath,
         Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
+        if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][2])}
         starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
         par_line<-strsplit(starter.new[grep("ss.par",starter.new)], " ")[[1]]
         par_line[1]<-0
@@ -771,7 +702,6 @@ SSS<-function(filepath,
     if(file.exists(paste(filepath,"/Report.sso",sep=""))){file.remove(paste(filepath,"/Report.sso",sep=""))}
   }
   colnames(Quant.out)<-colnames(Quant.out.bad)<-c("M_f","L1_f","Linf_f","k_f","M_m","L1_m","Linf_m","k_m","h","R0","SB0",paste("SSB_",sb_ofl_yrs[1],sep=""),"Term_Yr_Dep",paste("OFL_",sb_ofl_yrs[2],sep=""),paste("AdjCatch_",sb_ofl_yrs[2],sep=""),"SBMSY/SB0","BMSY/B0","FMSY","-lnL","LL_survey","Gradient","Dep.Obs","Dep.Exp","R0_init",paste("F_",f_yr,"/FMSY",sep=""),paste("OFL_",sb_ofl_yrs[3],sep=""),paste("AdjCatch_",sb_ofl_yrs[3],sep=""),"Crash_penalty")
-  #if(all(is.na(Input.draws.M))=="FALSE"){)
   if(ncol(Input.draws)==10){colnames(Input.draws)<-c("h","Dep","M_f","L1_f","Linf_f","k_f","M_m","L1_m","Linf_m","k_m")}
   if(ncol(Input.draws)==11){colnames(Input.draws)<-c("Sfrac","Dep","M_f","L1_f","Linf_f","k_f","Beta","M_m","L1_m","Linf_m","k_m")}
   if(SR_type>=8 | h.in[1]==99 | BH_FMSY_comp==T)
@@ -786,17 +716,5 @@ SSS<-function(filepath,
   SSS.out<-Spp.quant.out
   save(SSS.out,file=paste(filepath,"/SSS_out.DMP",sep=""))
   return(Spp.quant.out)
-}
-
-loadnnames <- function (file, ...)
-{
-  ls.ext <- function(file) {
-    local({
-      base::load(file)
-      base::ls()
-    })
-  }
-  base::load(file, .GlobalEnv, ...)
-  ls.ext(file)
 }
 
