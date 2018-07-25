@@ -550,6 +550,7 @@ SSS<-function(filepath,
     }
     if(SR_type<8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])}
     if(SR_type>=8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_steep",rep.new)], " ")[[1]][3])}
+    if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][23)}
     Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
     Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
     Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
@@ -569,7 +570,6 @@ SSS<-function(filepath,
     Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
-    if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][2])}
     warnings.out<-readLines(paste(filepath,"/warning.sso",sep=""))
     num.warning<-as.numeric(strsplit(warnings.out[grep("N warnings",warnings.out)[1]], " ")[[1]][4])
     
@@ -662,6 +662,7 @@ SSS<-function(filepath,
     }
         if(SR_type<8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])}
         if(SR_type>=8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_steep",rep.new)], " ")[[1]][3])}
+        if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][3])}
         Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
         Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
         Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
@@ -681,7 +682,6 @@ SSS<-function(filepath,
         Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
-        if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][2])}
         starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
         par_line<-strsplit(starter.new[grep("ss.par",starter.new)], " ")[[1]]
         par_line[1]<-0
@@ -701,7 +701,7 @@ SSS<-function(filepath,
     if(file.exists(paste(filepath,"/Report.sso",sep=""))){file.remove(paste(filepath,"/Forecast-report.sso",sep=""))}
     if(file.exists(paste(filepath,"/Report.sso",sep=""))){file.remove(paste(filepath,"/Report.sso",sep=""))}
   }
-  colnames(Quant.out)<-colnames(Quant.out.bad)<-c("M_f","L1_f","Linf_f","k_f","M_m","L1_m","Linf_m","k_m","h","R0","SB0",paste("SSB_",sb_ofl_yrs[1],sep=""),"Term_Yr_Dep",paste("OFL_",sb_ofl_yrs[2],sep=""),paste("AdjCatch_",sb_ofl_yrs[2],sep=""),"SBMSY/SB0","BMSY/B0","FMSY","-lnL","LL_survey","Gradient","Dep.Obs","Dep.Exp","R0_init",paste("F_",f_yr,"/FMSY",sep=""),paste("OFL_",sb_ofl_yrs[3],sep=""),paste("AdjCatch_",sb_ofl_yrs[3],sep=""),"Crash_penalty")
+  colnames(Quant.out)<-colnames(Quant.out.bad)<-c("M_f","L1_f","Linf_f","k_f","M_m","L1_m","Linf_m","k_m","h","R0","SB0",paste("SSB_",sb_ofl_yrs[1],sep=""),"Term_Yr_Dep",paste("OFL_",sb_ofl_yrs[2],sep=""),paste("AdjCatch_",sb_ofl_yrs[2],sep=""),"SBMSY/SB0","BMSY/B0","FMSY","-lnL","LL_survey","Gradient","Dep.Obs","Dep.Exp","R0_init",paste("F_",f_yr,"/FMSY",sep=""),paste("OFL_",sb_ofl_yrs[3],sep=""),paste("AdjCatch_",sb_ofl_yrs[3],sep=""),"Crash_penalty","Rick_gamma")
   if(ncol(Input.draws)==10){colnames(Input.draws)<-c("h","Dep","M_f","L1_f","Linf_f","k_f","M_m","L1_m","Linf_m","k_m")}
   if(ncol(Input.draws)==11){colnames(Input.draws)<-c("Sfrac","Dep","M_f","L1_f","Linf_f","k_f","Beta","M_m","L1_m","Linf_m","k_m")}
   if(SR_type>=8 | h.in[1]==99 | BH_FMSY_comp==T)
