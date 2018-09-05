@@ -51,7 +51,7 @@
 #
 #_growth_parms
 #_ LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
-0.02  0.09 0.09 -2.92 0.44  3 -5  0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
+0.000001  0.09 0.09 -2.92 0.44  3 -5  0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
 15  25  20.7718 20.8  10  0 -3  0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
 35  45  41.6366 41.4  10  0 -3  0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
 0.1 0.4 0.165916  0.166 0.05  0 -3  0 0 0 0 0 0 0 # VonBert_K_Fem_GP_1
