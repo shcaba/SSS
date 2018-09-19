@@ -1,7 +1,5 @@
 #V3.30.03.05
-# Pacific ocean perch 2017
-# Chantel Wetzel
-# Lee Cronin-Fine
+#Based on Pacific ocean perch 2017
 simple_pop.dat
 simple_pop.ctl
 0 # 0=use init values in control file; 1=use ss.par
