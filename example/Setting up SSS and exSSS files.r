@@ -1,6 +1,8 @@
 *Directions to making full assessment into exSSS
 #STARTER
 1) Turn off using par file
+2) 0 # run display detail (0,1,2). Option 0 makes less output on the R terminal.
+3) 2 # detailed age-structured reports in REPORT.SSO (0,1,2). Option 2 writes a smaller Report file, so should be quicker.
 2) No jitter
 3) Turn off all screen output, detailed reports
 4) Make convergence 0.001 (don't want it too small or it will take forever)

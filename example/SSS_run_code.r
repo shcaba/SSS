@@ -6,7 +6,7 @@ source(paste(Dir.in,"/SSS_code_newSRs.r",sep=""))
 
 POP.SSS.BH<-SSS(filepath=paste(Dir.in,"/sssexample_BH",sep=""),
                       file.name=c("simple_pop.dat","simple_pop.ctl"),
-                      reps=10,
+                      reps=10, #Change this to at least 1000 for a real run. This small # is good for a test run.
                       seed.in=19,
                       M.in=c(3,0.035,0.4,3,0.037,0.4),
                       Dep.in=c(2,0.32,0.2),
@@ -28,7 +28,7 @@ POP.SSS.BH<-SSS(filepath=paste(Dir.in,"/sssexample_BH",sep=""),
 
 POP.SSS.gR<-SSS(filepath=paste(Dir.in,"/sssexample_RickPow",sep=""),
                     file.name=c("simple_pop.dat","simple_pop.ctl"),
-                    reps=10,
+                    reps=10, #Change this to at least 1000 for a real run. This small # is good for a test run.
                     seed.in=19,
                     M.in=c(3,0.035,0.4,3,0.037,0.4),
                     Dep.in=c(2,0.32,0.2),
