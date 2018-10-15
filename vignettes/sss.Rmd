@@ -18,8 +18,12 @@ knitr::opts_chunk$set(
 
 ## Summary
 
+**sss** is a package for Simple Stock Synthesis (*sss*) which was designed for data-limited assessments that use catch data. *sss* calculates a time-series of abundance based on priors for natural mortality, steepness, and stock status in a specific year.  *sss* fixes values for natural mortality, steepness, and stock status drawn by Monte Carlo draws resulting a time-series based on the input parameters and catch data.
+
 
 ## Software requirements
+
+**sss** is designed for use with Stock Synthesis version 3.30.12 or greater.  The executable and additional information regarding Stock Synthesis is available on NOAA Vlab (https://vlab.ncep.noaa.gov/) which is accessible to all NOAA employees.  Access is also available to outside collaborators after creation of a user account.  If you are not a NOAA employee and would like to join the Stock Synthesis group on Vlab please email chantel.wetzel@noaa.gov.  
 
 
 ## Setting up a model
@@ -27,10 +31,58 @@ knitr::opts_chunk$set(
 
 ## File structure
 
+
+## Visualizing model set-up
+
+Once all files have been set-up by the user the Stock Synthesis executable should be run to ensure that all files have been defined properly.  The executable may be run from a command window using the command "ss -nohess".  If the model fails to run, the echoinput file can be used to determine where the reading of the input files failed.  After configuring a running model the user should confirm that only the log(R0) parameter is estimated by the model.  The results from a model run can be visualized using the **r4ss** package which can be located here: https://github.com/r4ss.  Once the **r4ss** package is installed the model may be read into R and visualized by:
+
+
+```{r, eval = FALSE}
+library(r4ss)
+update_r4ss_files()
+mydir<-"Model directory"
+base <- SS_output(mydir,covar=FALSE)
+SS_plots(base)
+```
+
 ## Data file
+
+1) Add another survey; make it for the beginning of the year (timing = 0.01) and add the area assignment
+2) +2 for the number of index lines
+3) Add fleet/survey line before indices
+4) Add two entries (beginning year, year of depletion prior). Make sure first year matches beginning year of model and second year matches the year of the depletion estimated.
+5) Make sure total removals are in catch (e.g., if discards are estimated in the
+   model, take discard estiamtes and add to landings
+
 
 ## Control file
 
+1) Use the control_new file as the CTL file
+2) Set first_age_at_maturity to 0
+3) Turn off all estimated parameters except lnR0
+4) Turn all parameters priors to negative numbers to avoid their contribution in the total likelihood
+5) If parameters were estimated, set input values to those values using report file
+6) No rec devs estimated; set est years to last year in model
+7) Add q line for depletion. Turn on extra variance for all surveys except the depletion survey.
+8) Add selectivity line for depletion (option 30)
+9) Check selectivity inputs; use assessment output or set to maturity assumption
+10) Turn off other data (e.g. dicards, mean weights, comps.) likelihoods (i.e., lambda=0): Add number of changes; make lambdas = 0
+11) Make sure the M and h labels are "NatM_p_1_Fem_GP_1", "NatM_p_1_mAL_GP_1", AND "SR_steep" respectively
+
+Additional Files
+1) Copy the CTL file and add "_orig" to the end of the name. The other CTL will be modified using the AIS draws.
+
+
 ## Forecast file
 
+**sss** does not do any adjustments to the forecast file.  The user needs to carefully consider the set-up of this file.  Within the forecast file, the target harvest rate, the control rule, and adjustments to the estimated overfishing limit is defined by the user.  Additionally, harvest may be fixed at a pre-determined value for select years during the forecast period to reflect a management system where harvest limits have already be set by management for specific years.  An example set-up for a West Coast groundfish stock assessment is provided in the example folder.
+
 ## Starter file
+
+1) Turn off using par file
+2) 0 # run display detail (0,1,2). Option 0 makes less output on the R terminal.
+3) 2 # detailed age-structured reports in REPORT.SSO (0,1,2). Option 2 writes a smaller Report file, so should be quicker.
+2) No jitter
+3) Turn off all screen output, detailed reports
+4) Make convergence 0.001 (don't want it too small or it will take forever)
+

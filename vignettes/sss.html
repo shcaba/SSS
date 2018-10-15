@@ -12,12 +12,50 @@
 
 <meta name="author" content="Jason Cope" />
 
-<meta name="date" content="2018-04-11" />
+<meta name="date" content="2018-10-14" />
 
 <title>Simple Stock Synthesis</title>
 
 
 
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
 
 
 
@@ -32,15 +70,17 @@
 
 <h1 class="title toc-ignore">Simple Stock Synthesis</h1>
 <h4 class="author"><em>Jason Cope</em></h4>
-<h4 class="date"><em>2018-04-11</em></h4>
+<h4 class="date"><em>2018-10-14</em></h4>
 
 
 
 <div id="summary" class="section level2">
 <h2>Summary</h2>
+<p><strong>sss</strong> is a package for Simple Stock Synthesis (<em>sss</em>) which was designed for data-limited assessments that use catch data. <em>sss</em> calculates a time-series of abundance based on priors for natural mortality, steepness, and stock status in a specific year. <em>sss</em> fixes values for natural mortality, steepness, and stock status drawn by Monte Carlo draws resulting a time-series based on the input parameters and catch data.</p>
 </div>
 <div id="software-requirements" class="section level2">
 <h2>Software requirements</h2>
+<p><strong>sss</strong> is designed for use with Stock Synthesis version 3.30.12 or greater. The executable and additional information regarding Stock Synthesis is available on NOAA Vlab (<a href="https://vlab.ncep.noaa.gov/" class="uri">https://vlab.ncep.noaa.gov/</a>) which is accessible to all NOAA employees. Access is also available to outside collaborators after creation of a user account. If you are not a NOAA employee and would like to join the Stock Synthesis group on Vlab please email <a href="mailto:chantel.wetzel@noaa.gov">chantel.wetzel@noaa.gov</a>.</p>
 </div>
 <div id="setting-up-a-model" class="section level2">
 <h2>Setting up a model</h2>
@@ -48,17 +88,56 @@
 <div id="file-structure" class="section level2">
 <h2>File structure</h2>
 </div>
+<div id="visualizing-model-set-up" class="section level2">
+<h2>Visualizing model set-up</h2>
+<p>Once all files have been set-up by the user the Stock Synthesis executable should be run to ensure that all files have been defined properly. The executable may be run from a command window using the command “ss -nohess”. If the model fails to run, the echoinput file can be used to determine where the reading of the input files failed. After configuring a running model the user should confirm that only the log(R0) parameter is estimated by the model. The results from a model run can be visualized using the <strong>r4ss</strong> package which can be located here: <a href="https://github.com/r4ss" class="uri">https://github.com/r4ss</a>. Once the <strong>r4ss</strong> package is installed the model may be read into R and visualized by:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(r4ss)
+<span class="kw">update_r4ss_files</span>()
+mydir&lt;-<span class="st">&quot;Model directory&quot;</span>
+base &lt;-<span class="st"> </span><span class="kw">SS_output</span>(mydir,<span class="dt">covar=</span><span class="ot">FALSE</span>)
+<span class="kw">SS_plots</span>(base)</code></pre></div>
+</div>
 <div id="data-file" class="section level2">
 <h2>Data file</h2>
+<ol style="list-style-type: decimal">
+<li>Add another survey; make it for the beginning of the year (timing = 0.01) and add the area assignment</li>
+<li>+2 for the number of index lines</li>
+<li>Add fleet/survey line before indices</li>
+<li>Add two entries (beginning year, year of depletion prior). Make sure first year matches beginning year of model and second year matches the year of the depletion estimated.</li>
+<li>Make sure total removals are in catch (e.g., if discards are estimated in the model, take discard estiamtes and add to landings</li>
+</ol>
 </div>
 <div id="control-file" class="section level2">
 <h2>Control file</h2>
+<ol style="list-style-type: decimal">
+<li>Use the control_new file as the CTL file</li>
+<li>Set first_age_at_maturity to 0</li>
+<li>Turn off all estimated parameters except lnR0</li>
+<li>Turn all parameters priors to negative numbers to avoid their contribution in the total likelihood</li>
+<li>If parameters were estimated, set input values to those values using report file</li>
+<li>No rec devs estimated; set est years to last year in model</li>
+<li>Add q line for depletion. Turn on extra variance for all surveys except the depletion survey.</li>
+<li>Add selectivity line for depletion (option 30)</li>
+<li>Check selectivity inputs; use assessment output or set to maturity assumption</li>
+<li>Turn off other data (e.g. dicards, mean weights, comps.) likelihoods (i.e., lambda=0): Add number of changes; make lambdas = 0</li>
+<li>Make sure the M and h labels are “NatM_p_1_Fem_GP_1”, “NatM_p_1_mAL_GP_1”, AND “SR_steep” respectively</li>
+</ol>
+<p>Additional Files 1) Copy the CTL file and add “_orig&quot; to the end of the name. The other CTL will be modified using the AIS draws.</p>
 </div>
 <div id="forecast-file" class="section level2">
 <h2>Forecast file</h2>
+<p><strong>sss</strong> does not do any adjustments to the forecast file. The user needs to carefully consider the set-up of this file. Within the forecast file, the target harvest rate, the control rule, and adjustments to the estimated overfishing limit is defined by the user. Additionally, harvest may be fixed at a pre-determined value for select years during the forecast period to reflect a management system where harvest limits have already be set by management for specific years. An example set-up for a West Coast groundfish stock assessment is provided in the example folder.</p>
 </div>
 <div id="starter-file" class="section level2">
 <h2>Starter file</h2>
+<ol style="list-style-type: decimal">
+<li>Turn off using par file</li>
+<li>0 # run display detail (0,1,2). Option 0 makes less output on the R terminal.</li>
+<li>2 # detailed age-structured reports in REPORT.SSO (0,1,2). Option 2 writes a smaller Report file, so should be quicker.</li>
+<li>No jitter</li>
+<li>Turn off all screen output, detailed reports</li>
+<li>Make convergence 0.001 (don’t want it too small or it will take forever)</li>
+</ol>
 </div>
 
 
