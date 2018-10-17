@@ -12,6 +12,10 @@ BugReports: https://github.com/shcaba/sss/issues
 Suggests:
     knitr,
     rmarkdown
+Imports:
+	msm,
+	EnvStats,
+	r4ss
 VignetteBuilder: knitr
 Depends:
     R (>= 3.1.0)
