@@ -9,7 +9,7 @@
 #_Cond 1 #_Morph_between/within_stdev_ratio (no read if N_morphs=1)
 #_Cond  1 #vector_Morphdist_(-1_in_first_val_gives_normal_approx)
 #
-2 # recr_dist_method for parameters:  1=like 3.24; 2=main effects for GP, Settle timing, Area; 3=each Settle entity; 4=none when N_GP*Nsettle*pop==1
+4 # recr_dist_method for parameters:  1=like 3.24; 2=main effects for GP, Settle timing, Area; 3=each Settle entity; 4=none when N_GP*Nsettle*pop==1
 1 # Recruitment: 1=global; 2=by area (future option)
 1 #  number of recruitment settlement assignments 
 0 # year_x_area_x_settlement_event interaction requested (only for recr_dist_method=1)
@@ -51,7 +51,7 @@
 #
 #_growth_parms
 #_ LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
-0.000001  0.09 0.09 -2.92 0.44  3 -5  0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
+0.0000001  0.02 0.02 -2.92 0.44  3 -5  0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
 15  25  20.7718 20.8  10  0 -3  0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
 35  45  41.6366 41.4  10  0 -3  0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
 0.1 0.4 0.165916  0.166 0.05  0 -3  0 0 0 0 0 0 0 # VonBert_K_Fem_GP_1
@@ -63,7 +63,7 @@
 -2  4 -1  -1  99  0 -99 0 0 0 0 0 0 0 # Mat_slope_Fem
 0 6 8.66E-10  1 99  0 -99 0 0 0 0 0 0 0 # Eggs_scalar_Fem
 -3  5 4.9767  5 99  0 -99 0 0 0 0 0 0 0 # Eggs_exp_len_Fem
--1  0.06 0.06 0.05  0.1 6 -5  0 0 0 0 0 0 0 # NatM_p_1_Mal_GP_1
+-1  0.03 0.03 0.05  0.1 6 -5  0 0 0 0 0 0 0 # NatM_p_1_Mal_GP_1
 -1  1 0 0 0.1 0 -2  0 0 0 0 0 0 0 # L_at_Amin_Mal_GP_1
 -1  1 -0.067241 -0.066  0.1 0 -2  0 0 0 0 0 0 0 # L_at_Amax_Mal_GP_1
 -1  1 0.172514  0.167 0.1 0 -3  0 0 0 0 0 0 0 # VonBert_K_Mal_GP_1
@@ -71,9 +71,9 @@
 -5  5 -0.0960858  0 0.5 0 -5 0 0 0 0 0 0 0 # CV_old_Mal_GP_1
 0 3 9.88E-06  9.88E-06  99  0 -99 0 0 0 0 0 0 0 # Wtlen_1_Mal
 2 4 3.1039  3.1039  99  0 -99 0 0 0 0 0 0 0 # Wtlen_2_Mal
-0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_GP_1
-0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_Area_1
-0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_Bseas_1
+#0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_GP_1
+#0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_Area_1
+#0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_Bseas_1
 0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # CohortGrowDev
 0.01  0.99  0.5 0.5 0.5 0 -99 0 0 0 0 0 0 0 # FracFemale_GP_1
 #
@@ -85,34 +85,33 @@
 #_Cond -2 2 0 0 -1 99 -2 #_placeholder when no seasonal MG parameters
 #
 #_Spawner-Recruitment
-9 #_SR_function: 2=Ricker; 3=std_B-H; 4=SCAA; 5=Hockey; 6=B-H_flattop; 7=survival_3Parm; 8=Shepard_3Parm
+3 #_SR_function: 2=Ricker; 3=std_B-H; 4=SCAA; 5=Hockey; 6=B-H_flattop; 7=survival_3Parm; 8=Shepard_3Parm
 0  # 0/1 to use steepness in initial equ recruitment calculation
 0  #  future feature:  0/1 to make realized sigmaR a function of SR curvature
 #_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn #  parm_name
-5 20 6.6 6.6 5 0 1 0 0 0 0 0 0 0 #SR_LN_R0
-0.2 1 0.483554 0.483554 0.15 2 -2 0 0 0	0 0	0 0	# SR_RkrPower_steep
-0 10 1.3276 1.3276 -1 0.8 -4 0 0 0 0 0 0 0	# SR_RkrPower_gamma
-0.5	1.2	0.7	0.7	99	0	-6	0	0	0	0	0	0	0	#	SR_sigmaR
--5	5	0	0	99	0	-99	0	0	0	0	0	0	0	#	SR_regime
-0	2	0	1	99	0	-99	0	0	0	0	0	0	0	#	SR_autocorr
+5 20 9 9 5 0 1 0 0 0 0 0 0 0 # SR_LN_R0
+0.2 1 0.79 0.79 0.15 2 -2 0 0 0 0 0 0 0 # SR_BH_steep
+           0.5           1.2           0.7           0.7            99             0         -6          0          0          0          0          0          0          0 # SR_sigmaR
+            -5             5             0             0            99             0        -99          0          0          0          0          0          0          0 # SR_regime
+             0             2             0             1            99             0        -99          0          0          0          0          0          0          0 # SR_autocorr
 0 #do_recdev:  0=none; 1=devvector; 2=simple deviations
 1917 # first year of main recr_devs; early devs can preceed this era
 1917 # last year of main recr_devs; forecast devs start in following year
 -1 #_recdev phase 
-1 # (0/1) to read 13 advanced options
-  0 #_recdev_early_start (0=none; neg value makes relative to recdev_start)
- -3 #_recdev_early_phase
- -5 #_forecast_recruitment phase (incl. late recr) (0 value resets to maxphase+1)
- 1 #_lambda for Fcast_recr_like occurring before endyr+1
- -1955 #_last_early_yr_nobias_adj_in_MPD
- -1975 #_first_yr_fullbias_adj_in_MPD
- -2012 #_last_yr_fullbias_adj_in_MPD
- -2014 #_first_recent_yr_nobias_adj_in_MPD
- -1 #_max_bias_adj_in_MPD (-1 to override ramp and set biasadj=1.0 for all estimated recdevs)
- 0 #_period of cycles in recruitment (N parms read below)
- -6 #min rec_dev
- 6 #max rec_dev
- 0 #_read_recdevs
+0 # (0/1) to read 13 advanced options
+#  0 #_recdev_early_start (0=none; neg value makes relative to recdev_start)
+# -3 #_recdev_early_phase
+# -5 #_forecast_recruitment phase (incl. late recr) (0 value resets to maxphase+1)
+# 1 #_lambda for Fcast_recr_like occurring before endyr+1
+# -1955 #_last_early_yr_nobias_adj_in_MPD
+# -1975 #_first_yr_fullbias_adj_in_MPD
+# -2012 #_last_yr_fullbias_adj_in_MPD
+# -2014 #_first_recent_yr_nobias_adj_in_MPD
+# -1 #_max_bias_adj_in_MPD (-1 to override ramp and set biasadj=1.0 for all estimated recdevs)
+# 0 #_period of cycles in recruitment (N parms read below)
+# -6 #min rec_dev
+# 6 #max rec_dev
+# 0 #_read_recdevs
 #_end of advanced SR options
 #
 #_placeholder for full parameter lines for recruitment cycles
@@ -178,7 +177,7 @@
 #_Factor  Fleet  Value
  -9999   1    0  # terminator
 #
-1 #_maxlambdaphase
+2 #_maxlambdaphase
 1 #_sd_offset
 # read 12 changes to default Lambdas (default value is 1.0)
 # Like_comp codes:  1=surv; 2=disc; 3=mnwt; 4=length; 5=age; 6=SizeFreq; 7=sizeage; 8=catch; 9=init_equ_catch; 
