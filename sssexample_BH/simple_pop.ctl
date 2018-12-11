@@ -9,7 +9,7 @@
 #_Cond 1 #_Morph_between/within_stdev_ratio (no read if N_morphs=1)
 #_Cond  1 #vector_Morphdist_(-1_in_first_val_gives_normal_approx)
 #
-2 # recr_dist_method for parameters:  1=like 3.24; 2=main effects for GP, Settle timing, Area; 3=each Settle entity; 4=none when N_GP*Nsettle*pop==1
+4 # recr_dist_method for parameters:  1=like 3.24; 2=main effects for GP, Settle timing, Area; 3=each Settle entity; 4=none when N_GP*Nsettle*pop==1
 1 # Recruitment: 1=global; 2=by area (future option)
 1 #  number of recruitment settlement assignments 
 0 # year_x_area_x_settlement_event interaction requested (only for recr_dist_method=1)
@@ -71,9 +71,9 @@
 -5  5 -0.0960858  0 0.5 0 -5 0 0 0 0 0 0 0 # CV_old_Mal_GP_1
 0 3 9.88E-06  9.88E-06  99  0 -99 0 0 0 0 0 0 0 # Wtlen_1_Mal
 2 4 3.1039  3.1039  99  0 -99 0 0 0 0 0 0 0 # Wtlen_2_Mal
-0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_GP_1
-0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_Area_1
-0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_Bseas_1
+#0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_GP_1
+#0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_Area_1
+#0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_Bseas_1
 0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # CohortGrowDev
 0.01  0.99  0.5 0.5 0.5 0 -99 0 0 0 0 0 0 0 # FracFemale_GP_1
 #
@@ -98,20 +98,20 @@
 1917 # first year of main recr_devs; early devs can preceed this era
 1917 # last year of main recr_devs; forecast devs start in following year
 -1 #_recdev phase 
-1 # (0/1) to read 13 advanced options
-  0 #_recdev_early_start (0=none; neg value makes relative to recdev_start)
- -3 #_recdev_early_phase
- -5 #_forecast_recruitment phase (incl. late recr) (0 value resets to maxphase+1)
- 1 #_lambda for Fcast_recr_like occurring before endyr+1
- -1955 #_last_early_yr_nobias_adj_in_MPD
- -1975 #_first_yr_fullbias_adj_in_MPD
- -2012 #_last_yr_fullbias_adj_in_MPD
- -2014 #_first_recent_yr_nobias_adj_in_MPD
- -1 #_max_bias_adj_in_MPD (-1 to override ramp and set biasadj=1.0 for all estimated recdevs)
- 0 #_period of cycles in recruitment (N parms read below)
- -6 #min rec_dev
- 6 #max rec_dev
- 0 #_read_recdevs
+0 # (0/1) to read 13 advanced options
+#  0 #_recdev_early_start (0=none; neg value makes relative to recdev_start)
+# -3 #_recdev_early_phase
+# -5 #_forecast_recruitment phase (incl. late recr) (0 value resets to maxphase+1)
+# 1 #_lambda for Fcast_recr_like occurring before endyr+1
+# -1955 #_last_early_yr_nobias_adj_in_MPD
+# -1975 #_first_yr_fullbias_adj_in_MPD
+# -2012 #_last_yr_fullbias_adj_in_MPD
+# -2014 #_first_recent_yr_nobias_adj_in_MPD
+# -1 #_max_bias_adj_in_MPD (-1 to override ramp and set biasadj=1.0 for all estimated recdevs)
+# 0 #_period of cycles in recruitment (N parms read below)
+# -6 #min rec_dev
+# 6 #max rec_dev
+# 0 #_read_recdevs
 #_end of advanced SR options
 #
 #_placeholder for full parameter lines for recruitment cycles
@@ -177,7 +177,7 @@
 #_Factor  Fleet  Value
  -9999   1    0  # terminator
 #
-1 #_maxlambdaphase
+2 #_maxlambdaphase
 1 #_sd_offset
 # read 12 changes to default Lambdas (default value is 1.0)
 # Like_comp codes:  1=surv; 2=disc; 3=mnwt; 4=length; 5=age; 6=SizeFreq; 7=sizeage; 8=catch; 9=init_equ_catch; 
