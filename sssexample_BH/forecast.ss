@@ -8,8 +8,8 @@
 0	0	0	0	0	0	0	0	0	0
 2 #Bmark_relF_Basis: 1 = use year range; 2 = set relF same as forecast below
 #
-1 # Forecast: 0=none; 1=F(SPR); 2=F(MSY) 3=F(Btgt); 4=Ave F (uses first-last relF yrs); 5=input annual F scalar
-12 # N forecast years 
+2 # Forecast: 0=none; 1=F(SPR); 2=F(MSY) 3=F(Btgt); 4=Ave F (uses first-last relF yrs); 5=input annual F scalar
+3 # N forecast years 
 1 # F scalar (only used for Do_Forecast==5)
 #_Fcast_years:  beg_selex, end_selex, beg_relF, end_relF, beg_recruits, end_recruits  (enter actual year, or values of 0 or -integer to be rel. endyr)
  0	0	0	0	0	0

@@ -51,7 +51,7 @@
 #
 #_growth_parms
 #_ LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
-0.0000001  0.02 0.02 -2.92 0.44  3 -5  0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
+0.0000001  0.03 0.03 -2.92 0.44  3 -5  0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
 15  25  20.7718 20.8  10  0 -3  0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
 35  45  41.6366 41.4  10  0 -3  0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
 0.1 0.4 0.165916  0.166 0.05  0 -3  0 0 0 0 0 0 0 # VonBert_K_Fem_GP_1
@@ -63,7 +63,7 @@
 -2  4 -1  -1  99  0 -99 0 0 0 0 0 0 0 # Mat_slope_Fem
 0 6 8.66E-10  1 99  0 -99 0 0 0 0 0 0 0 # Eggs_scalar_Fem
 -3  5 4.9767  5 99  0 -99 0 0 0 0 0 0 0 # Eggs_exp_len_Fem
--1  0.03 0.03 0.05  0.1 6 -5  0 0 0 0 0 0 0 # NatM_p_1_Mal_GP_1
+-1  0.04 0.04 0.05  0.1 6 -5  0 0 0 0 0 0 0 # NatM_p_1_Mal_GP_1
 -1  1 0 0 0.1 0 -2  0 0 0 0 0 0 0 # L_at_Amin_Mal_GP_1
 -1  1 -0.067241 -0.066  0.1 0 -2  0 0 0 0 0 0 0 # L_at_Amax_Mal_GP_1
 -1  1 0.172514  0.167 0.1 0 -3  0 0 0 0 0 0 0 # VonBert_K_Mal_GP_1
@@ -85,12 +85,13 @@
 #_Cond -2 2 0 0 -1 99 -2 #_placeholder when no seasonal MG parameters
 #
 #_Spawner-Recruitment
-3 #_SR_function: 2=Ricker; 3=std_B-H; 4=SCAA; 5=Hockey; 6=B-H_flattop; 7=survival_3Parm; 8=Shepard_3Parm
+9 #_SR_function: 2=Ricker; 3=std_B-H; 4=SCAA; 5=Hockey; 6=B-H_flattop; 7=survival_3Parm; 8=Shepard_3Parm
 0  # 0/1 to use steepness in initial equ recruitment calculation
 0  #  future feature:  0/1 to make realized sigmaR a function of SR curvature
 #_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn #  parm_name
 5 20 9 9 5 0 1 0 0 0 0 0 0 0 # SR_LN_R0
-0.2 1 0.79 0.79 0.15 2 -2 0 0 0 0 0 0 0 # SR_BH_steep
+0.2 1 0.632007 0.632007 0.15 2 -2 0 0 0	0 0	0 0	# SR_RkrPower_steep
+0 10 0.921123 0.921123 -1 0.8 -4 0 0 0 0 0 0 0	# SR_RkrPower_gamma
            0.5           1.2           0.7           0.7            99             0         -6          0          0          0          0          0          0          0 # SR_sigmaR
             -5             5             0             0            99             0        -99          0          0          0          0          0          0          0 # SR_regime
              0             2             0             1            99             0        -99          0          0          0          0          0          0          0 # SR_autocorr

@@ -527,7 +527,7 @@ SSS<-function(filepath,
     }
     
     #Begin extracting info from run
-    forecast.file<-readLines(paste(filepath,"/Forecast-report.sso",sep=""))
+    #forecast.file<-readLines(paste(filepath,"/Forecast-report.sso",sep=""))
     for(iii in 1:length(year0:sb_ofl_yrs[1]))
     	{
     		SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])
@@ -558,7 +558,8 @@ SSS<-function(filepath,
     Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
-    Quant.out[i,17]<-as.numeric(strsplit(forecast.file[grep("calculate_FMSY",forecast.file)+13],split="[[:blank:]]+")[[1]][2])/as.numeric(strsplit(forecast.file[grep("BIO_Smry_unfished",forecast.file)],split="[[:blank:]]+")[[1]][2])
+    Quant.out[i,17]<-as.numeric(strsplit(rep.new[grep("B_MSY/SSB_unfished",rep.new)], " ")[[1]][3])
+    #Quant.out[i,17]<-as.numeric(strsplit(forecast.file[grep("calculate_FMSY",forecast.file)+13],split="[[:blank:]]+")[[1]][2])/as.numeric(strsplit(forecast.file[grep("BIO_Smry_unfished",forecast.file)],split="[[:blank:]]+")[[1]][2])
     Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
     Quant.out[i,19]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)], " ")[[1]][2])
     Quant.out[i,20]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)+2], " ")[[1]][2])
@@ -640,7 +641,7 @@ SSS<-function(filepath,
         write(starter.new,paste(filepath,"/starter.ss",sep=""))
         RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")
         rep.new<-readLines(paste(filepath,"/Report.sso",sep=""))
-        forecast.file<-readLines(paste(filepath,"/Forecast-report.sso",sep=""))
+        #forecast.file<-readLines(paste(filepath,"/Forecast-report.sso",sep=""))
       for(iii in 1:length(year0:sb_ofl_yrs[1]))
     	{
     		SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])
@@ -670,7 +671,8 @@ SSS<-function(filepath,
         Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
-        Quant.out[i,17]<-as.numeric(strsplit(forecast.file[grep("calculate_FMSY",forecast.file)+13],split="[[:blank:]]+")[[1]][2])/as.numeric(strsplit(forecast.file[grep("BIO_Smry_unfished",forecast.file)],split="[[:blank:]]+")[[1]][2])
+        Quant.out[i,17]<-as.numeric(strsplit(rep.new[grep("B_MSY/SSB_unfished",rep.new)], " ")[[1]][3])
+        #Quant.out[i,17]<-as.numeric(strsplit(forecast.file[grep("Maximum_Sustainable_Yield;_where_Yield_is_Dead_Catch",forecast.file)+14],split="[[:blank:]]+")[[1]][2])/as.numeric(strsplit(forecast.file[grep("BIO_Smry_unfished",forecast.file)],split="[[:blank:]]+")[[1]][2])
         Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
         Quant.out[i,19]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)], " ")[[1]][2])
         Quant.out[i,20]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)+2], " ")[[1]][2])
