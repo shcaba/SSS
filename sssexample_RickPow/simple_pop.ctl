@@ -97,7 +97,7 @@
              0             2             0             1            99             0        -99          0          0          0          0          0          0          0 # SR_autocorr
 0 #do_recdev:  0=none; 1=devvector; 2=simple deviations
 1917 # first year of main recr_devs; early devs can preceed this era
-1917 # last year of main recr_devs; forecast devs start in following year
+2016 # last year of main recr_devs; forecast devs start in following year
 -1 #_recdev phase 
 0 # (0/1) to read 13 advanced options
 #  0 #_recdev_early_start (0=none; neg value makes relative to recdev_start)

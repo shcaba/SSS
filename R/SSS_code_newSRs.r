@@ -303,7 +303,8 @@ SSS<-function(filepath,
         if(genders==T)
           {
             SRdat.new[5]<-paste(as.character(M.draw),as.character(M.draw.M),sep=" ")
-            M_FMSY<-mean(c(M.draw,M.draw.M))
+            #M_FMSY<-mean(c(M.draw,M.draw.M))
+            M_FMSY<-M.draw
           }
         #print(c(M.draw,M.draw.M,M_FMSY,FMSY_M.draw,BMSY_B0.draw))
         #SRdat.new.mod[3]<-Winf
