@@ -1,7 +1,7 @@
 #V3.30.03.05
 #Based on Pacific ocean perch 2017
-simple_pop.dat
-simple_pop.ctl
+sss_example.dat
+sss_example.ctl
 0 # 0=use init values in control file; 1=use ss.par
 0 # run display detail (0,1,2)
 2 # detailed age-structured reports in REPORT.SSO (0,1,2) 

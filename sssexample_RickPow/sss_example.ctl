@@ -47,7 +47,7 @@
 0 #_First_Mature_Age
 2 #_fecundity option:(1)eggs=Wt*(a+b*Wt);(2)eggs=a*L^b;(3)eggs=a*Wt^b; (4)eggs=a+b*L; (5)eggs=a+b*W
 0 #_hermaphroditism option:  0=none; 1=female-to-male age-specific fxn; -1=male-to-female age-specific fxn
-2 #_parameter_offset_approach (1=none, 2= M, G, CV_G as offset from female-GP1, 3=like SS2 V1.x)
+1 #_parameter_offset_approach (1=none, 2= M, G, CV_G as offset from female-GP1, 3=like SS2 V1.x)
 #
 #_growth_parms
 #_ LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
@@ -63,12 +63,12 @@
 -2  4 -1  -1  99  0 -99 0 0 0 0 0 0 0 # Mat_slope_Fem
 0 6 8.66E-10  1 99  0 -99 0 0 0 0 0 0 0 # Eggs_scalar_Fem
 -3  5 4.9767  5 99  0 -99 0 0 0 0 0 0 0 # Eggs_exp_len_Fem
--1  0.04 0.04 0.05  0.1 6 -5  0 0 0 0 0 0 0 # NatM_p_1_Mal_GP_1
--1  1 0 0 0.1 0 -2  0 0 0 0 0 0 0 # L_at_Amin_Mal_GP_1
--1  1 -0.067241 -0.066  0.1 0 -2  0 0 0 0 0 0 0 # L_at_Amax_Mal_GP_1
--1  1 0.172514  0.167 0.1 0 -3  0 0 0 0 0 0 0 # VonBert_K_Mal_GP_1
--5  5 0 0 0.5 0 -5  0 0 0 0 0 0 0 # CV_young_Mal_GP_1
--5  5 -0.0960858  0 0.5 0 -5 0 0 0 0 0 0 0 # CV_old_Mal_GP_1
+0.0000001  0.03 0.03 -2.92 0.44  3 -5  0 0 0 0 0 0 0 # NatM_p_1_Mal_GP_1
+15  25  20.7718 20.8  10  0 -3  0 0 0 0 0 0 0 # L_at_Amin_Mal_GP_1
+35  45  41.6366 41.4  10  0 -3  0 0 0 0 0 0 0 # L_at_Amax_Mal_GP_1
+0.1 0.4 0.165916  0.166 0.05  0 -3  0 0 0 0 0 0 0 # VonBert_K_Mal_GP_1
+0.03  5 1.34174 1.31  0.5 0 -5  0 0 0 0 0 0 0 # CV_young_Mal_GP_1
+0.03  5 2.56502 2.68  0.5 0 -5  0 0 0 0 0 0 0 # CV_old_Mal_GP_1
 0 3 9.88E-06  9.88E-06  99  0 -99 0 0 0 0 0 0 0 # Wtlen_1_Mal
 2 4 3.1039  3.1039  99  0 -99 0 0 0 0 0 0 0 # Wtlen_2_Mal
 #0 2 1 1 99  0 -99 0 0 0 0 0 0 0 # RecrDist_GP_1
