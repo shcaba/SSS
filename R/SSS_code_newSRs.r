@@ -32,7 +32,7 @@ SSS<-function(filepath,
               file.name,
               reps=1000,
               seed.in=19,
-              Dep.in=c(1,0.4,0.1),
+              Dep.in=c(2,0.4,0.1),
               M.in=c(3,0.1,0.4,3,0.1,0.4),
               SR_type=3,
               h.in=c(1,0.6,0.2),
@@ -325,18 +325,24 @@ SSS<-function(filepath,
         SRMQ_rep.new<-readLines(paste(filepath,"/h_BMSY_FMSY/bmsyb0.rep",sep=""))
         SRMQ_par[i]<-as.numeric(strsplit(readLines(paste(filepath,"/h_BMSY_FMSY/bmsyb0.par",sep="")),split=" ")[[1]][11])
         steep_expo.out<-as.numeric(strsplit(SRMQ_rep.new[1]," ")[[1]])
-        if(steep_expo.out[1]<0.25|steep_expo.out[1]>=1|steep_expo.out[2]>10|SRMQ_par[i]>0.1)
+        if(steep_expo.out[1]<0.2|steep_expo.out[1]>=2|steep_expo.out[2]>10|SRMQ_par[i]>0.1)
           {
             #print("retry 1")
             SRdat.new[21]<-"-0.1"
             write(SRdat.new,paste(filepath,"/h_BMSY_FMSY/BMSYB0.dat",sep=""))
             RUN.SS(paste(filepath,"/h_BMSY_FMSY/",sep=""), ss.exe="BMSYB0",ss.cmd=" -nox > out.txt")
+        SRMQ_rep.new<-readLines(paste(filepath,"/h_BMSY_FMSY/bmsyb0.rep",sep=""))
+        SRMQ_par[i]<-as.numeric(strsplit(readLines(paste(filepath,"/h_BMSY_FMSY/bmsyb0.par",sep="")),split=" ")[[1]][11])
+        steep_expo.out<-as.numeric(strsplit(SRMQ_rep.new[1]," ")[[1]])
             if(steep_expo.out[1]<0.25|steep_expo.out[1]>=1|steep_expo.out[2]>10|SRMQ_par[i]>0.1)
             {
             #print("retry 2")
             SRdat.new[21]<-"-1.51"
             write(SRdat.new,paste(filepath,"/h_BMSY_FMSY/BMSYB0.dat",sep=""))
             RUN.SS(paste(filepath,"/h_BMSY_FMSY/",sep=""), ss.exe="BMSYB0",ss.cmd=" -nox > out.txt")
+        SRMQ_rep.new<-readLines(paste(filepath,"/h_BMSY_FMSY/bmsyb0.rep",sep=""))
+        SRMQ_par[i]<-as.numeric(strsplit(readLines(paste(filepath,"/h_BMSY_FMSY/bmsyb0.par",sep="")),split=" ")[[1]][11])
+        steep_expo.out<-as.numeric(strsplit(SRMQ_rep.new[1]," ")[[1]])
             }
             if(steep_expo.out[1]<0.25|steep_expo.out[1]>=1|steep_expo.out[2]>10|SRMQ_par[i]>0.1)
             {
@@ -345,9 +351,12 @@ SSS<-function(filepath,
             SRdat.new[23]<-"-0.31"
             write(SRdat.new,paste(filepath,"/h_BMSY_FMSY/BMSYB0.dat",sep=""))
             RUN.SS(paste(filepath,"/h_BMSY_FMSY/",sep=""), ss.exe="BMSYB0",ss.cmd=" -nox > out.txt")
+        SRMQ_rep.new<-readLines(paste(filepath,"/h_BMSY_FMSY/bmsyb0.rep",sep=""))
+        SRMQ_par[i]<-as.numeric(strsplit(readLines(paste(filepath,"/h_BMSY_FMSY/bmsyb0.par",sep="")),split=" ")[[1]][11])
+        steep_expo.out<-as.numeric(strsplit(SRMQ_rep.new[1]," ")[[1]])
             }
-          }
-        if(steep_expo.out[1]>=0.25&steep_expo.out[1]<1&steep_expo.out[2]<=10&SRMQ_par[i]<0.1){x<-2}          
+          } 
+        if(steep_expo.out[1]>=0.2&steep_expo.out[1]<2&steep_expo.out[2]<=10&SRMQ_par[i]<0.1){x<-2}          
         }
       }
       Input.draws[i,1]<-h.draw<-steep_expo.out[1]
