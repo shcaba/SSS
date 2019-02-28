@@ -60,3 +60,6 @@ SS_plots(base)
 
 
 Sys.sleep(0.001)
+
+#Debugging tricks
+#Make sure 

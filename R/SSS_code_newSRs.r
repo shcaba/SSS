@@ -71,8 +71,8 @@ SSS<-function(filepath,
   sb.years<-c(year0:sb_ofl_yrs[1])
   Quant.out<-as.data.frame(matrix(NA,nrow=reps,ncol=29))
   Quant.out.bad<-as.data.frame(matrix(NA,1,ncol=29))
-  SB.out<-TB.out<-SumAge.out<-SPR.out<-as.data.frame(matrix(NA,nrow=reps,ncol=length(sb.years)))
-  colnames(SB.out)<-colnames(TB.out)<-colnames(SumAge.out)<-colnames(SPR.out)<-sb.years
+  SB.out<-TB.out<-SumAge.out<-SPR.out<-B_BMSY.out<-as.data.frame(matrix(NA,nrow=reps,ncol=length(sb.years)))
+  colnames(SB.out)<-colnames(TB.out)<-colnames(SumAge.out)<-colnames(SPR.out)<-colnames(B_BMSY.out)<-sb.years
   
   starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
   sum_age_line<-strsplit(starter.new[grep("summary biomass",starter.new)], " ")[[1]]
@@ -544,6 +544,7 @@ SSS<-function(filepath,
     		TB.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][5])
     		SumAge.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][6])
     		SPR.out[i,iii]<-as.numeric(strsplit(rep.new[grep("SPR_series",rep.new)+5+iii], " ")[[2]][8])
+        B_BMSY.out[i,iii]<-as.numeric(strsplit(rep.new[grep("Yr  B/Bmsy  F/Fmsy",rep.new)+iii], " ")[[1]][2])
      	}
     		
     Dep.series.out<-SB.out/SB.out[,1]
@@ -658,6 +659,7 @@ SSS<-function(filepath,
     		TB.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][5])
     		SumAge.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][6])
     		SPR.out[i,iii]<-as.numeric(strsplit(rep.new[grep("SPR_series",rep.new)+5+iii], " ")[[2]][8])
+        B_BMSY.out[i,iii]<-as.numeric(strsplit(rep.new[grep("Yr  B/Bmsy  F/Fmsy",rep.new)+iii], " ")[[1]][2])
     	}
      Dep.series.out<-SB.out/SB.out[,1]
         Quant.out[i,1]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Fem_GP_1",rep.new)], " ")[[1]][3])
@@ -723,8 +725,8 @@ SSS<-function(filepath,
       colnames(Input.draws)[c(ltcolnames-1,ltcolnames)]<-c("Beta","Obj_fxn")
     }
   end.time<-Sys.time()
-  Spp.quant.out<-list(Input.draws,Quant.out,SB.out,Dep.series.out,TB.out,SumAge.out,SPR.out,Quant.out.bad,ii-1,(as.numeric(end.time)-as.numeric(start.time))/60)
-  names(Spp.quant.out)<-c("Priors","Posteriors","SB_series","Rel_Stock_status_series","Total_Biomass","Summary_Biomass","SPR","Rejected_draws","Total draws","Runtime_minutes")
+  Spp.quant.out<-list(Input.draws,Quant.out,SB.out,Dep.series.out,TB.out,SumAge.out,SPR.out,B_BMSY.out,Quant.out.bad,ii-1,(as.numeric(end.time)-as.numeric(start.time))/60)
+  names(Spp.quant.out)<-c("Priors","Posteriors","SB_series","Rel_Stock_status_series","Total_Biomass","Summary_Biomass","SPR","B/BMSY","Rejected_draws","Total draws","Runtime_minutes")
   SSS.out<-Spp.quant.out
   save(SSS.out,file=paste(filepath,"/SSS_out.DMP",sep=""))
   return(Spp.quant.out)
