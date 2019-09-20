@@ -92,8 +92,8 @@ SSS<-function(filepath,
     #- values = no draws taken; one value fixed in the model
     #0 = normal
     #10 = truncated normal
-    #1 = symmetric beta
-    #2 = full beta (rbeta)
+    #1 = symmetric beta (rbeta)
+    #2 = beta 
     #3 = lognormal
     #30 = truncated lognormal
     #4 = uniform
@@ -104,6 +104,7 @@ SSS<-function(filepath,
     if(length(Dep.in)==3)
     {
       if(Dep.in[1]==2){Dep.draw<-round(1-rbeta.ab(1,1-Dep.in[2],Dep.in[3],0.05,0.95),2)}
+      if(Dep.in[1]==3){Dep.draw<-round(rlnorm(1,log(Dep.in[2]),Dep.in[3]),2)}
       if(Dep.in[1]==4){Dep.draw<-round(runif(1,Dep.in[2],Dep.in[3]),2)}
       if(Dep.in[1]==10){Dep.draw<-round(rtnorm(1,Dep.in[2],Dep.in[3],0.01,1),2)}
       Input.draws[i,2]<-Dep.draw
@@ -149,9 +150,9 @@ SSS<-function(filepath,
     }
 
     #Growth parameters
-    if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[1],L1.in[1]),2); Input.draws[i,4]<-L1.draw}
-    if(sum(Linf.in[1:2])>0){Linf.draw<-round(rnorm(1,Linf.in[1],Linf.in[1]),2); Input.draws[i,5]<-Linf.draw}
-    if(sum(k.in[1:2])>0){k.draw<-round(rnorm(1,k.in[1],k.in[1]),2); Input.draws[i,6]<-k.draw}
+    if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[1],L1.in[2]),2); Input.draws[i,4]<-L1.draw}
+    if(sum(Linf.in[1:2])>0){Linf.draw<-round(rnorm(1,Linf.in[1],Linf.in[2]),2); Input.draws[i,5]<-Linf.draw}
+    if(sum(k.in[1:2])>0){k.draw<-round(rnorm(1,k.in[1],k.in[2]),2); Input.draws[i,6]<-k.draw}
     #Male draws
     if(genders==T)
     {
@@ -163,7 +164,8 @@ SSS<-function(filepath,
     #Steenpess
     if(h.in[1]>=0 & length(h.in)==3 & FMSY_M.in[1]<0 & BMSY_B0.in[1]<0)
     {
-      if(h.in[1]==2){h.draw<-round(rbeta.ab(1,h.in[2],h.in[3],0.21,0.99),2)}
+      if(h.in[1]==1){h.draw<-round(rbeta.ab(1,h.in[2],h.in[3],0.21,0.99),2)}
+      if(h.in[1]==2){h.draw<-round(rbeta(1,h.in[2],h.in[3],0.21,0.99),2)}
       if(h.in[1]==10){h.draw<-round(rtnorm(1,h.in[2],h.in[3],0.21,0.99),2)}
       if(h.in[1]==30){h.draw<-round(rlnormTrunc(1,log(h.in[2]),h.in[3],0.21,0.99),2)}
       if(h.in[1]==4){h.draw<-round(runif(1,h.in[2],h.in[3]),2)}
