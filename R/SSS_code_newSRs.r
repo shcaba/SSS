@@ -1,26 +1,26 @@
 ##' This file contails all the SSS code 
 ##' @param filepath location where the SSS will look for model files and run the executable
 ##' @param file.name vector of file names for the data and control file where the expected input is c("data file", "control file") 
-##' @param reps number of mcmc draws to perform
-##' @param seed.in seed number 
+##' @param reps number of random draws to perform
+##' @param seed.in seed number to fix where random sample are drawn.
 ##' @param Dep.in vector defining distribution, mean, sd, and bounds for depletion prior.  Expected input is c(distribution shape, mean, sd). The distribution options are 2 = 1 - beta, 4 = uniform, 10 = truncated normal.
 ##' @param M.in vector defining natural mortality distribuition, mean, and . Expected input is c(distrbution shape for females, mean for females, sd for females, distribution shape for males, mean for males, sd for males). The distibution options are 0 = normal, 3 = lognormal, and 4 = uniform.
 ##' @param SR_type The shape of the stock-recruitment curve. Options are based on SS stock-recruit options. Option 3 = Beverton-holt, 8 = Shepherd 3-parameter, 9 = Ricker 3-parameter
 ##' @param h.in vector defining the steepness distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.
 ##' @param FMSY_M.in vector defining the Fmsy/M ratio distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are; negative value = ?, 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.
 ##' @param BMSY_B0.in vector defining the Bmsy/B0 ratio distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are; negative value = ?, 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.
-##' @param L1.in vector defining the minimum length. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)
+##' @param L1.in vector defining the minimum length for a given age. Setting this to 0 in the control file makes it the VBGF t0. A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)
 ##' @param Linf.in vector defining the maximum length. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)
 ##' @param k.in vector defining the growth coefficient k. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)
-##' @param Zfrac.Beta.in
+##' @param Zfrac.Beta.in is the Zfrac beta for stock recruit function 7 in Stock Synthesis (Survivorship function). Sometimes used with elasmobranchs. Inputs are prior type (- values skips the draws) and prior type inputs.
 ##' @param R_start vector allowing the user to control the starting R0 value in the control file. Expected value is c( switch option, input value) where the switch optionas are 1= draw from a random draw from a truncated lognormal distribution based on the input value and 0 = start from the input value.
-##' @param doR0.loop
+##' @param doR0.loop allows for a profile over initial R0 values in order to find a converged model. It will stop the profile once a converged model is found. Inputs are feature on/off, staring profile value, ending profile, profile step. A 0 for the first value means you will only consider models that start at the given intial R0. Highly recommended to keep this as TRUE, though it can take more computational time.  
 ##' @param sum_age summary age for total biomass calculation used by SS
-##' @param sb_ofl_yrs the years for which OFL values should be calculated
-##' @param f_yr final model year
-##' @param year0 initial model year
+##' @param ts_yrs start and end years of model year
+##' @param ofl_yrs the years for which OFL values should be calculated
 ##' @param genders TRUE/FALSE allows for the user to specify whether or not sexes should have the same values from drawn parameters (e.g., natural mortality, L1, Linf)
 ##' @param BH_FMSY_comp
+##' @param OStype distinguishes operating system being used. "Windows" or "OSX_Linux"
 ##' @author Jason Cope and Chantel Wetzel
 ##' @export
 ##' @seealso \code{\link{Opt_s_prof}}, \code{\link{Change_SSfiles}}, \code{\link{rbeta}}, \code{\link{rbeta_solve}}, \code{\link{rtlnorm}}, \code{\link{Run_SS}}, \code{\link{loadnnames}},
@@ -45,15 +45,17 @@ SSS<-function(filepath,
               R_start=c(0,8),
               doR0.loop=c(1,4.1,12.1,0.5),
               sum_age=0,
-              sb_ofl_yrs=c(2010,2011,2012),
-              f_yr=2012,
-              year0=1916,
+              ts_yrs=NA,
+              pop.ltbins=NA,
+              ofl_yrs=c(2021,2022),
               genders=F,
-              BH_FMSY_comp=F)
+              BH_FMSY_comp=F,
+              OStype="Windows")
 {
 
   require(msm)
   require(EnvStats)
+  require(r4ss)
 
   set.seed(seed.in)
   start.time<-Sys.time()
@@ -68,17 +70,34 @@ SSS<-function(filepath,
     Input.draws.MQs<-as.data.frame(matrix(NA,nrow=reps,ncol=3))
     colnames(Input.draws.MQs)<-c("FMSY/M","BMSY/B0","FMSY")
   }
-  sb.years<-c(year0:sb_ofl_yrs[1])
+  sb.years<-c(ts_yrs[1]:ts_yrs[2])
   Quant.out<-as.data.frame(matrix(NA,nrow=reps,ncol=29))
   Quant.out.bad<-as.data.frame(matrix(NA,1,ncol=29))
   SB.out<-TB.out<-SumAge.out<-SPR.out<-B_BMSY.out<-as.data.frame(matrix(NA,nrow=reps,ncol=length(sb.years)))
   colnames(SB.out)<-colnames(TB.out)<-colnames(SumAge.out)<-colnames(SPR.out)<-colnames(B_BMSY.out)<-sb.years
   
-  starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
-  sum_age_line<-strsplit(starter.new[grep("summary biomass",starter.new)], " ")[[1]]
-  sum_age_line[1]<-sum_age
-  starter.new[grep("summary biomass",starter.new)]<-paste(sum_age_line, collapse=" ")
-  write(starter.new,paste(filepath,"/starter.ss",sep=""))
+#Input the file names and the summary age into the starter file
+  starter.new <- SS_readstarter(file.path(filepath, 'starter.ss'))
+  starter$datfile <- file.name[2]
+  starter$ctlfile <- file.name[2]
+  starter$min_age_summary_bio <- sum_age
+  SS_writestarter(starter.new, filepath, overwrite=TRUE)
+
+#Input the starting and ending years of the model
+  if(ts_yrs!=NA)
+  {
+    dat.yrs <- SS_readdat(file.path(filepath, file.name[1]))
+    dat.yrs$styr<-ts_yrs[1]
+    dat.yrs$endyr<-ts_yrs[2]
+    SS_writedat(dat.yrs, filepath, overwrite=TRUE)    
+  }
+  
+  # starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
+  # sum_age_line<-strsplit(starter.new[grep("summary biomass",starter.new)], " ")[[1]]
+  # sum_age_line[1]<-sum_age
+  # starter.new[grep("summary biomass",starter.new)]<-paste(sum_age_line, collapse=" ")
+  # write(starter.new,paste(filepath,"/starter.ss",sep=""))
+  
   i<-1
   ii<-1
   xxx<-1
@@ -98,8 +117,10 @@ SSS<-function(filepath,
     #30 = truncated lognormal
     #4 = uniform
     #99 = used only for the steepness parameter. Indicates h will come from FMSY/M prior
-    dat.new<-readLines(paste(filepath,"/",file.name[1],sep=""))
-    ctl.new<-readLines(paste(filepath,"/",file.name[2],sep=""))
+    # dat.new<-readLines(paste(filepath,"/",file.name[1],sep=""))
+    # ctl.new<-readLines(paste(filepath,"/",file.name[2],sep=""))
+    dat.new<-SS_readdat(file.path(filepath, file.name[1]))
+    ctl.new<-SS_readctl(file.path(filepath, file.name[1]))
     
     if(length(Dep.in)==3)
     {
@@ -395,11 +416,13 @@ SSS<-function(filepath,
     #change Depletion
     if(Dep.in[1]>=0)
     {
-      Dep.line<-strsplit(dat.new[grep("DEPLETION",dat.new)], " ")[[1]]
-      fleet_num<-Dep.line[3]
-      Dep.line[4]<-Dep.draw
-      dat.new[grep("DEPLETION",dat.new)]<-paste(Dep.line,collapse=" ")
-      write(dat.new,paste(filepath,"/",file.name[1],sep=""))
+      # Dep.line<-strsplit(dat.new[grep("DEPLETION",dat.new)], " ")[[1]]
+      # fleet_num<-Dep.line[3]
+      # Dep.line[4]<-Dep.draw
+      # dat.new[grep("DEPLETION",dat.new)]<-paste(Dep.line,collapse=" ")
+      #write(dat.new,paste(filepath,"/",file.name[1],sep=""))
+      dat.new$CPUE[2,4]<-Dep.draw
+      SS_writedat(dat.new, filepath, overwrite=TRUE)      
     }
     #change M
     Sys.sleep(1)
@@ -514,7 +537,8 @@ SSS<-function(filepath,
     write(ctl.new,paste(filepath,"/",file.name[2],sep=""))
     
     #Run model
-    RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")
+    if(OStype=="Windows"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
+    if(OStype=="OSX_Linux"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="./ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
     
     #Evaluate convergence and record values
     rep.new<-readLines(paste(filepath,"/Report.sso",sep=""))
@@ -536,7 +560,8 @@ SSS<-function(filepath,
         R0.line[c(3,4)]<-R0.explore[xx]
         ctl.new[grep("R0",ctl.new)]<-paste(R0.line,collapse=" ")
         write(ctl.new,paste(filepath,"/",file.name[2],sep=""))
-        RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")
+        if(OStype=="Windows"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
+        if(OStype=="OSX_Linux"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="./ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
         rep.new<-readLines(paste(filepath,"/Report.sso",sep=""))
         if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==TRUE){Dep.out.testR0<-10}
         if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==FALSE){Dep.out.testR0<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])}
@@ -548,7 +573,7 @@ SSS<-function(filepath,
     
     #Begin extracting info from run
     #forecast.file<-readLines(paste(filepath,"/Forecast-report.sso",sep=""))
-    for(iii in 1:length(year0:sb_ofl_yrs[1]))
+    for(iii in 1:length(ts_yrs[1]:ts_yrs[2]))
     	{
     		SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])
     		TB.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][5])
@@ -574,8 +599,8 @@ SSS<-function(filepath,
     if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][3])}
     Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
     Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
-    Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
-    Quant.out[i,13]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
+    Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])
+    Quant.out[i,13]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
     Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
@@ -588,7 +613,7 @@ SSS<-function(filepath,
     if(Dep.in[1]>=0){Quant.out[i,22]<-as.numeric(Dep.line[4])}
     if(Dep.in[1]>=0){Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])}
     Quant.out[i,24]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8])
-    Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",f_yr,sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
+    Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
     Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
@@ -660,10 +685,12 @@ SSS<-function(filepath,
         par_line[1]<-1
         starter.new[grep("ss.par",starter.new)]<-paste(par_line, collapse=" ")
         write(starter.new,paste(filepath,"/starter.ss",sep=""))
-        RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")
+        if(OStype=="Windows"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
+        if(OStype=="OSX_Linux"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="./ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
+        #RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")
         rep.new<-readLines(paste(filepath,"/Report.sso",sep=""))
         #forecast.file<-readLines(paste(filepath,"/Forecast-report.sso",sep=""))
-      for(iii in 1:length(year0:sb_ofl_yrs[1]))
+      for(iii in 1:length(ts_yrs[1]:ts_yrs[2]))
     	{
     		SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])
     		TB.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][5])
@@ -688,8 +715,8 @@ SSS<-function(filepath,
         if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][3])}
         Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
         Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
-        Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
-        Quant.out[i,13]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb_ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
+        Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])
+        Quant.out[i,13]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
         Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
@@ -702,7 +729,7 @@ SSS<-function(filepath,
         Quant.out[i,22]<-as.numeric(Dep.line[4])
         Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,24]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8])
-        Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",f_yr,sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
+        Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
         Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",sb_ofl_yrs[3],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
@@ -725,7 +752,7 @@ SSS<-function(filepath,
     if(file.exists(paste(filepath,"/Report.sso",sep=""))){file.remove(paste(filepath,"/Forecast-report.sso",sep=""))}
     if(file.exists(paste(filepath,"/Report.sso",sep=""))){file.remove(paste(filepath,"/Report.sso",sep=""))}
   }
-  colnames(Quant.out)<-colnames(Quant.out.bad)<-c("M_f","L1_f","Linf_f","k_f","M_m","L1_m","Linf_m","k_m","h","R0","SB0",paste("SSB_",sb_ofl_yrs[1],sep=""),"Term_Yr_Dep",paste("OFL_",sb_ofl_yrs[2],sep=""),paste("AdjCatch_",sb_ofl_yrs[2],sep=""),"SBMSY/SB0","BMSY/B0","FMSY","-lnL","LL_survey","Gradient","Dep.Obs","Dep.Exp","R0_init",paste("F_",f_yr,"/FMSY",sep=""),paste("OFL_",sb_ofl_yrs[3],sep=""),paste("AdjCatch_",sb_ofl_yrs[3],sep=""),"Crash_penalty","Rick_gamma")
+  colnames(Quant.out)<-colnames(Quant.out.bad)<-c("M_f","L1_f","Linf_f","k_f","M_m","L1_m","Linf_m","k_m","h","R0","SB0",paste("SSB_",ts_yrs[2],sep=""),"Term_Yr_Dep",paste("OFL_",sb_ofl_yrs[2],sep=""),paste("AdjCatch_",sb_ofl_yrs[2],sep=""),"SBMSY/SB0","BMSY/B0","FMSY","-lnL","LL_survey","Gradient","Dep.Obs","Dep.Exp","R0_init",paste("F_",ts_yrs[2],"/FMSY",sep=""),paste("OFL_",sb_ofl_yrs[3],sep=""),paste("AdjCatch_",sb_ofl_yrs[3],sep=""),"Crash_penalty","Rick_gamma")
   if(ncol(Input.draws)==10){colnames(Input.draws)<-c("h","Dep","M_f","L1_f","Linf_f","k_f","M_m","L1_m","Linf_m","k_m")}
   if(ncol(Input.draws)==11){colnames(Input.draws)<-c("Sfrac","Dep","M_f","L1_f","Linf_f","k_f","Beta","M_m","L1_m","Linf_m","k_m")}
   if(SR_type>=8 | h.in[1]==99 | BH_FMSY_comp==T)
