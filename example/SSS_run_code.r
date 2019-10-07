@@ -48,9 +48,9 @@ POP.SSS.BH<-SSS(filepath= Dir.in, # location to run the model
                 FMSY_M.in=c(-30,0.8,0.2), # c(distribution, mean, sd)
                 BMSY_B0.in=c(-2,0.4,0.05), # c(distribution, mean, sd)
                 R_start=c(0,9), # c( switch option, input value)
-                sb_ofl_yrs=c(2017,2018,2019), # projection years 
-                f_yr=2016, # final year of the model
-                year0=1918, # start year of the model
+                ts_yrs=c(1918,2016),
+                pop.ltbins=NA,
+                ofl_yrs=c(2017,2018,2019), # projection years 
                 genders=T # unique male and female M
 )
 
