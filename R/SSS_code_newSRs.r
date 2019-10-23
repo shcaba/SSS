@@ -84,7 +84,7 @@ SSS<-function(filepath,
   SS_writestarter(starter.new, filepath, overwrite=TRUE)
 
 #Input the starting and ending years of the model
-  if(!is.na(ts_yrs))
+  if(all(!is.na(ts_yrs)))
   {
       dat.new<-readLines(paste(filepath,"/",file.name[1],sep=""))
       Styr.line<-strsplit(dat.new[grep("styr",dat.new)], " ")[[1]]
