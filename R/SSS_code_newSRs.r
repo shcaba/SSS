@@ -194,7 +194,7 @@ SSS<-function(filepath,
     if(h.in[1]>=0 & length(h.in)==3 & FMSY_M.in[1]<0 & BMSY_B0.in[1]<0)
     {
       if(h.in[1]==1){h.draw<-round(rbeta.ab(1,h.in[2],h.in[3],0.21,0.99),2)}
-      if(h.in[1]==2){h.draw<-round(rbeta(1,h.in[2],h.in[3],0.21,0.99),2)}
+      if(h.in[1]==2){h.draw<-round(rbeta(1,h.in[2],h.in[3]),2)}
       if(h.in[1]==10){h.draw<-round(rtnorm(1,h.in[2],h.in[3],0.21,0.99),2)}
       if(h.in[1]==30){h.draw<-round(rlnormTrunc(1,log(h.in[2]),h.in[3],0.21,0.99),2)}
       if(h.in[1]==4){h.draw<-round(runif(1,h.in[2],h.in[3]),2)}
