@@ -30,7 +30,7 @@ vignette("sss")
 ## sb_ofl_yrs the years for which OFL values should be calculated
 ## f_yr final model year
 ## year0 initial model year
-## genders TRUE/FALSE allows for the user to specify whether or not sexes should have the same values from drawn parameters (e.g., natural mortality, L1, Linf)
+## sexes TRUE/FALSE allows for the user to specify whether or not sexes should have the same values from drawn parameters (e.g., natural mortality, L1, Linf)
 ## BH_FMSY_comp
 ########################################################################################################
 
@@ -51,7 +51,7 @@ POP.SSS.BH<-SSS(filepath= Dir.in, # location to run the model
                 ts_yrs=c(1918,2016),
                 pop.ltbins=NA,
                 ofl_yrs=c(2017,2018,2019), # projection years 
-                genders=T # unique male and female M
+                sexes=T # unique male and female M
 )
 
 
@@ -77,7 +77,7 @@ POP.SSS.gR<-SSS(filepath=Dir.in,
                 sb_ofl_yrs=c(2017,2018,2019),
                 f_yr=2016,
                 year0=1918,
-                genders=T)
+                sexes=T)
 
 
 

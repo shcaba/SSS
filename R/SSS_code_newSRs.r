@@ -18,7 +18,7 @@
 ##' @param sum_age summary age for total biomass calculation used by SS
 ##' @param ts_yrs start and end years of model year
 ##' @param ofl_yrs the years for which OFL values should be calculated
-##' @param genders TRUE/FALSE allows for the user to specify whether or not sexes should have the same values from drawn parameters (e.g., natural mortality, L1, Linf)
+##' @param sexes TRUE/FALSE allows for the user to specify whether or not sexeses should have the same values from drawn parameters (e.g., natural mortality, L1, Linf)
 ##' @param BH_FMSY_comp
 ##' @param OStype distinguishes operating system being used. "Windows" or "OSX_Linux"
 ##' @author Jason Cope and Chantel Wetzel
@@ -48,7 +48,7 @@ SSS<-function(filepath,
               ts_yrs=NA,
               pop.ltbins=NA,
               ofl_yrs=c(2021,2022),
-              genders=F,
+              sexes=F,
               BH_FMSY_comp=F,
               OStype="Windows")
 {
@@ -160,7 +160,7 @@ SSS<-function(filepath,
         }
       else{Input.draws[i,3]<-M.draw<-M.in[i,1]}
 
-      if(genders==T)
+      if(sexes==T)
       {
         if(length(M.in)==6)
         {
@@ -183,7 +183,7 @@ SSS<-function(filepath,
     if(sum(Linf.in[1:2])>0){Linf.draw<-round(rnorm(1,Linf.in[1],Linf.in[2]),2); Input.draws[i,5]<-Linf.draw}
     if(sum(k.in[1:2])>0){k.draw<-round(rnorm(1,k.in[1],k.in[2]),2); Input.draws[i,6]<-k.draw}
     #Male draws
-    if(genders==T)
+    if(sexes==T)
     {
       if(sum(L1.in[3:4])>0) { 
         L1.draw.M <- round(rnorm(1,L1.in[3], L1.in[4]), 2)
@@ -222,7 +222,7 @@ SSS<-function(filepath,
         }
         else{Input.draws[i,3]<-M.draw<-M.in[i,1]}
         #Male draws
-        if(genders==T)
+        if(sexes==T)
           {
             if(length(M.in)==6)
             {
@@ -242,12 +242,12 @@ SSS<-function(filepath,
         if(length(FMSY_M.in)>3){FMSY_M.draw<-FMSY_M.in[i]}
         Input.draws.MQs[i,1]<-FMSY_M.draw
 
-        if(genders==F)
+        if(sexes==F)
           {
             SRdat.new[5]<-paste(as.character(M.draw),as.character(M.draw),sep=" ")
             M_FMSY<-M.draw
           }
-        if(genders==T)
+        if(sexes==T)
           {
             SRdat.new[5]<-paste(as.character(M.draw),as.character(M.draw.M),sep=" ")
             M_FMSY<-mean(c(M.draw,M.draw.M))
@@ -312,7 +312,7 @@ SSS<-function(filepath,
         }
         else{Input.draws[i,3]<-M.draw<-M.in[i,1]}
         #Male draws
-        if(genders==T)
+        if(sexes==T)
           {
             if(length(M.in)==6)
             {
@@ -338,12 +338,12 @@ SSS<-function(filepath,
         Input.draws.MQs[i,1]<-FMSY_M.draw
         Input.draws.MQs[i,2]<-BMSY_B0.draw
         #SRdat.new.mod[1]<-as.numeric(Amax.line[1])
-        if(genders==F)
+        if(sexes==F)
           {
             SRdat.new[5]<-paste(as.character(M.draw),as.character(M.draw),sep=" ")
             M_FMSY<-M.draw
           }
-        if(genders==T)
+        if(sexes==T)
           {
             SRdat.new[5]<-paste(as.character(M.draw),as.character(M.draw.M),sep=" ")
             #M_FMSY<-mean(c(M.draw,M.draw.M))
@@ -464,7 +464,7 @@ SSS<-function(filepath,
       ctl.new[grep("VonBert_K_Fem_GP_1",ctl.new)]<-paste(k.line,collapse=" ")
     }
     #change male pararmeters
-    if(genders==T)
+    if(sexes==T)
     {
       #change M
       if(M.in[4]>=0)
@@ -599,7 +599,7 @@ SSS<-function(filepath,
     Quant.out[i,2]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Fem_GP_1",rep.new)], " ")[[1]][3])
     Quant.out[i,3]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Fem_GP_1",rep.new)], " ")[[1]][3])
     Quant.out[i,4]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Fem_GP_1",rep.new)], " ")[[1]][3])
-    if(genders==T)
+    if(sexes==T)
     {
       Quant.out[i,5]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Mal_GP_1",rep.new)], " ")[[1]][3])
       Quant.out[i,6]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Mal_GP_1",rep.new)], " ")[[1]][3])
@@ -715,7 +715,7 @@ SSS<-function(filepath,
         Quant.out[i,2]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Fem_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,3]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Fem_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,4]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Fem_GP_1",rep.new)], " ")[[1]][3])
-    if(genders==T)
+    if(sexes==T)
     {
         Quant.out[i,5]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Mal_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,6]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Mal_GP_1",rep.new)], " ")[[1]][3])
