@@ -185,7 +185,11 @@ SSS<-function(filepath,
     #Male draws
     if(genders==T)
     {
-      if(sum(L1.in[3:4])>0){L1.draw.M<-round(rnorm(1,L1.in[3],L1.in[4]),2); Input.draws.M[i,2]<-L1.draw.M}
+      if(sum(L1.in[3:4])>0) { 
+        L1.draw.M <- round(rnorm(1,L1.in[3], L1.in[4]), 2)
+        Input.draws.M[i,2]<-L1.draw.M
+      }
+
       if(sum(Linf.in[3:4])>0){Linf.draw.M<-round(rnorm(1,Linf.in[3],Linf.in[4]),2); Input.draws.M[i,3]<-Linf.draw.M}
       if(sum(k.in[3:4])>0){k.draw.M<-round(rnorm(1,k.in[3],k.in[4]),2); Input.draws.M[i,4]<-k.draw.M}
     }
