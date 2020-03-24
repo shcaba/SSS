@@ -39,7 +39,7 @@ vignette("sss")
 Dir.in <-"C:/SSS/sssexample_BH"
 
 POP.SSS.BH<-SSS(filepath= Dir.in, # location to run the model
-                file.name=c("simple_pop.dat","simple_pop.ctl"), # data and ctl file names
+                file.name=c("sss_example.dat","sss_example.ctl"), # data and ctl file names
                 reps=10, # number of model runs
                 seed.in=19, # seed number
                 Dep.in=c(2, 0.60, 0.1), # c(distribution shape, mean, sd)
@@ -64,7 +64,7 @@ Dir.in <-"C:/SSS/sssexample_RickPow"
 
 # Ricker power curve example
 POP.SSS.gR<-SSS(filepath=Dir.in,
-                file.name=c("simple_pop.dat","simple_pop.ctl"),
+                file.name=c("sss_example.dat","sss_example.ctl"),
                 reps=10, # Iterations
                 seed.in=19, # Seed number
                 M.in=c(3,0.035,0.4,3,0.037,0.4),
