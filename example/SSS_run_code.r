@@ -74,9 +74,8 @@ POP.SSS.gR<-SSS(filepath=Dir.in,
                 FMSY_M.in=c(30,0.8,0.2),
                 BMSY_B0.in=c(2,0.4,0.05),
                 R_start=c(0,9),
-                sb_ofl_yrs=c(2017,2018,2019),
-                f_yr=2016,
-                year0=1918,
+                ofl_yrs=c(2017,2018,2019),
+                ts_yr=c(1918, 2016),
                 sexes=T)
 
 
