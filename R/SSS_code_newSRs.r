@@ -77,27 +77,27 @@ SSS<-function(filepath,
   colnames(SB.out)<-colnames(TB.out)<-colnames(SumAge.out)<-colnames(SPR.out)<-colnames(B_BMSY.out)<-sb.years
   
 #Input the file names and the summary age into the starter file
-  starter.new <- SS_readstarter(file.path(filepath, 'starter.ss'))
+  starter.new <- SS_readstarter(file.path(filepath, 'starter.ss'),verbose=FALSE)
   starter.new$datfile <- file.name[1]
   starter.new$ctlfile <- file.name[2]
   starter.new$min_age_summary_bio <- sum_age
-  SS_writestarter(starter.new, filepath, overwrite=TRUE)
+  SS_writestarter(starter.new, filepath, overwrite=TRUE,verbose=FALSE)
 
 #Input the starting and ending years of the model
   if(all(!is.na(ts_yrs)))
   {
-      dat.new<-readLines(paste(filepath,"/",file.name[1],sep=""))
-      Styr.line<-strsplit(dat.new[grep("styr",dat.new)], " ")[[1]]
-      Styr.line[1]<-ts_yrs[1]
-      Endyr.line<-strsplit(dat.new[grep("endyr",dat.new)], " ")[[1]]
-      Endyr.line[1]<-ts_yrs[2]
-      dat.new[grep("styr",dat.new)]<-paste(Styr.line,collapse=" ")
-      dat.new[grep("endyr",dat.new)]<-paste(Endyr.line,collapse=" ")
-      write(dat.new,paste(filepath,"/",file.name[1],sep=""))
-    # dat.yrs <- SS_readdat(file.path(filepath, file.name[1]))
-    # dat.yrs$styr<-ts_yrs[1]
-    # dat.yrs$endyr<-ts_yrs[2]
-    # SS_writedat(dat.yrs, file.path(filepath, file.name[1]), overwrite=TRUE)    
+   #   dat.new<-readLines(paste(filepath,"/",file.name[1],sep=""))
+    #   Styr.line<-strsplit(dat.new[grep("styr",dat.new)], " ")[[1]]
+    #   Styr.line[1]<-ts_yrs[1]
+    #   Endyr.line<-strsplit(dat.new[grep("endyr",dat.new)], " ")[[1]]
+    #   Endyr.line[1]<-ts_yrs[2]
+    #   dat.new[grep("styr",dat.new)]<-paste(Styr.line,collapse=" ")
+    #   dat.new[grep("endyr",dat.new)]<-paste(Endyr.line,collapse=" ")
+    #   write(dat.new,paste(filepath,"/",file.name[1],sep=""))
+    dat.yrs <- SS_readdat(file.path(filepath, file.name[1]),verbose=FALSE)
+    dat.yrs$styr<-ts_yrs[1]
+    dat.yrs$endyr<-ts_yrs[2]
+    SS_writedat(dat.yrs, file.path(filepath, file.name[1]), overwrite=TRUE,verbose=FALSE)    
   }
   
   # starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
@@ -125,10 +125,10 @@ SSS<-function(filepath,
     #30 = truncated lognormal
     #4 = uniform
     #99 = used only for the steepness parameter. Indicates h will come from FMSY/M prior
-     dat.new<-readLines(paste(filepath,"/",file.name[1],sep=""))
-     ctl.new<-readLines(paste(filepath,"/",file.name[2],sep=""))
-    #dat.new<-SS_readdat(file.path(filepath, file.name[1]))
-    #ctl.new<-SS_readctl(file.path(filepath, file.name[2]))
+    # dat.new<-readLines(paste(filepath,"/",file.name[1],sep=""))
+    # ctl.new<-readLines(paste(filepath,"/",file.name[2],sep=""))
+    dat.new<-SS_readdat(file.path(filepath, file.name[1]),verbose=FALSE)
+    ctl.new<-SS_readctl(file.path(filepath, file.name[2]),use_datlist = TRUE, datlist=dat.new,verbose=FALSE)
     
     if(length(Dep.in)==3)
     {
@@ -147,7 +147,7 @@ SSS<-function(filepath,
     #Natural mortality
     if(FMSY_M.in[1]<0 & BMSY_B0.in[1]<0)
     {
-      if(M.in[1]>=0 & length(M.in)==6)
+      if(M.in[1]>=0 & length(M.in)<=6)
         {
           M.draw<-0
           while(M.draw<=0)
@@ -424,44 +424,49 @@ SSS<-function(filepath,
       Input.draws[i,7]<-Beta.draw
     }
     
+
     ### Change DAT and CTL inputs ###
     #change Depletion
     if(Dep.in[1]>=0)
     {
-      Dep.line<-strsplit(dat.new[grep("DEPLETION",dat.new)], " ")[[1]]
-      fleet_num<-Dep.line[3]
-      Dep.line[4]<-Dep.draw
-      dat.new[grep("DEPLETION",dat.new)]<-paste(Dep.line,collapse=" ")
-      write(dat.new,paste(filepath,"/",file.name[1],sep=""))
-      #dat.new$CPUE[2,4]<-Dep.draw
-      #SS_writedat(dat.new, filepath, overwrite=TRUE)      
+      # Dep.line<-strsplit(dat.new[grep("DEPLETION",dat.new)], " ")[[1]]
+      # fleet_num<-Dep.line[3]
+      # Dep.line[4]<-Dep.draw
+      # dat.new[grep("DEPLETION",dat.new)]<-paste(Dep.line,collapse=" ")
+      # write(dat.new,paste(filepath,"/",file.name[1],sep=""))
+      dat.new$CPUE[2,4]<-Dep.draw
+      SS_writedat(dat.new, paste0(filepath,"/",file.name[1]), overwrite=TRUE,verbose=FALSE)      
     }
     #change M
     Sys.sleep(1)
     if(M.in[1]>=0)
     {
-      M.line<-strsplit(ctl.new[grep("NatM_p_1_Fem_GP_1",ctl.new)], " ")[[1]]
-      M.line[c(3,4)]<-M.draw
-      ctl.new[grep("NatM_p_1_Fem_GP_1",ctl.new)]<-paste(M.line,collapse=" ")
+      ctl.new$MG_parms[1,3]<-M.draw
+      #M.line<-strsplit(ctl.new[grep("NatM_p_1_Fem_GP_1",ctl.new)], " ")[[1]]
+      #M.line[c(3,4)]<-M.draw
+      #ctl.new[grep("NatM_p_1_Fem_GP_1",ctl.new)]<-paste(M.line,collapse=" ")
     }
     #change growth parameters
     if(sum(L1.in[1:2])>0)
     {
-      L1.line<-strsplit(ctl.new[grep("L_at_Amin_Fem_GP_1",ctl.new)], " ")[[1]]
-      L1.line[c(3,4)]<-L1.draw
-      ctl.new[grep("L_at_Amin_Fem_GP_1",ctl.new)]<-paste(L1.line,collapse=" ")
+      ctl.new$MG_parms[2,3:4]<-L1.draw
+      # L1.line<-strsplit(ctl.new[grep("L_at_Amin_Fem_GP_1",ctl.new)], " ")[[1]]
+      # L1.line[c(3,4)]<-L1.draw
+      # ctl.new[grep("L_at_Amin_Fem_GP_1",ctl.new)]<-paste(L1.line,collapse=" ")
     }
     if(sum(Linf.in[1:2])>0)
     {
-      Linf.line<-strsplit(ctl.new[grep("L_at_Amax_Fem_GP_1",ctl.new)], " ")[[1]]
-      Linf.line[c(3,4)]<-Linf.draw
-      ctl.new[grep("L_at_Amax_Fem_GP_1",ctl.new)]<-paste(Linf.line,collapse=" ")
+      ctl.new$MG_parms[3,3:4]<-Linf.draw
+    #   Linf.line<-strsplit(ctl.new[grep("L_at_Amax_Fem_GP_1",ctl.new)], " ")[[1]]
+    #   Linf.line[c(3,4)]<-Linf.draw
+    #   ctl.new[grep("L_at_Amax_Fem_GP_1",ctl.new)]<-paste(Linf.line,collapse=" ")
     }
     if(sum(k.in[1:2])>0)
     {
-      k.line<-strsplit(ctl.new[grep("VonBert_K_Fem_GP_1",ctl.new)], " ")[[1]]
-      k.line[c(3,4)]<-k.draw
-      ctl.new[grep("VonBert_K_Fem_GP_1",ctl.new)]<-paste(k.line,collapse=" ")
+      ctl.new$MG_parms[4,3:4]<-k.draw
+      # k.line<-strsplit(ctl.new[grep("VonBert_K_Fem_GP_1",ctl.new)], " ")[[1]]
+      # k.line[c(3,4)]<-k.draw
+      # ctl.new[grep("VonBert_K_Fem_GP_1",ctl.new)]<-paste(k.line,collapse=" ")
     }
     #change male pararmeters
     if(sexes==T)
@@ -469,84 +474,100 @@ SSS<-function(filepath,
       #change M
       if(M.in[4]>=0)
       {
-        M.line.M<-strsplit(ctl.new[grep("NatM_p_1_Mal_GP_1",ctl.new)], " ")[[1]]
-        M.line.M[c(3,4)]<-M.draw.M
-        ctl.new[grep("NatM_p_1_Mal_GP_1",ctl.new)]<-paste(M.line.M,collapse=" ")
+        ctl.new$MG_parms[13,3]<-M.draw.M
+        # M.line.M<-strsplit(ctl.new[grep("NatM_p_1_Mal_GP_1",ctl.new)], " ")[[1]]
+        # M.line.M[c(3,4)]<-M.draw.M
+        # ctl.new[grep("NatM_p_1_Mal_GP_1",ctl.new)]<-paste(M.line.M,collapse=" ")
       }
       #change growth parameters
       if(sum(L1.in[3:4])>0)
       {
-        L1.line.M<-strsplit(ctl.new[grep("L_at_Amin_Mal_GP_1",ctl.new)], " ")[[1]]
-        L1.line.M[c(3,4)]<-L1.draw.M
-        ctl.new[grep("L_at_Amin_Mal_GP_1",ctl.new)]<-paste(L1.line.M,collapse=" ")
+        ctl.new$MG_parms[14,3]<-L1.draw.M
+        # L1.line.M<-strsplit(ctl.new[grep("L_at_Amin_Mal_GP_1",ctl.new)], " ")[[1]]
+        # L1.line.M[c(3,4)]<-L1.draw.M
+        # ctl.new[grep("L_at_Amin_Mal_GP_1",ctl.new)]<-paste(L1.line.M,collapse=" ")
       }
       if(sum(Linf.in[3:4])>0)
       {
-        Linf.line.M<-strsplit(ctl.new[grep("L_at_Amax_Mal_GP_1",ctl.new)], " ")[[1]]
-        Linf.line.M[c(3,4)]<-Linf.draw.M
-        ctl.new[grep("L_at_Amax_Mal_GP_1",ctl.new)]<-paste(Linf.line.M,collapse=" ")
+        ctl.new$MG_parms[15,3]<-Linf.draw.M
+        # Linf.line.M<-strsplit(ctl.new[grep("L_at_Amax_Mal_GP_1",ctl.new)], " ")[[1]]
+        # Linf.line.M[c(3,4)]<-Linf.draw.M
+        # ctl.new[grep("L_at_Amax_Mal_GP_1",ctl.new)]<-paste(Linf.line.M,collapse=" ")
       }
       if(sum(k.in[3:4])>0)
       {
-        k.line.M<-strsplit(ctl.new[grep("VonBert_K_Mal_GP_1",ctl.new)], " ")[[1]]
-        k.line.M[c(3,4)]<-k.draw.M
-        ctl.new[grep("VonBert_K_Mal_GP_1",ctl.new)]<-paste(k.line.M,collapse=" ")
+        ctl.new$MG_parms[16,3]<-k.draw.M
+        # k.line.M<-strsplit(ctl.new[grep("VonBert_K_Mal_GP_1",ctl.new)], " ")[[1]]
+        # k.line.M[c(3,4)]<-k.draw.M
+        # ctl.new[grep("VonBert_K_Mal_GP_1",ctl.new)]<-paste(k.line.M,collapse=" ")
       }
     }
     
-    SRtype.line<-strsplit(ctl.new[grep("SR_function",ctl.new)], " ")[[1]]
-    SRtype.line[1]<-SR_type
-    ctl.new[grep("SR_function",ctl.new)]<-paste(SRtype.line,collapse=" ")
+    ctl.new$SR_function<-SR_type
+    # SRtype.line<-strsplit(ctl.new[grep("SR_function",ctl.new)], " ")[[1]]
+    # SRtype.line[1]<-SR_type
+    # ctl.new[grep("SR_function",ctl.new)]<-paste(SRtype.line,collapse=" ")
+    
     #change R0
-    if(R_start[1]==1)
-    {
-      R0.draw<-round(rlnormTrunc(1,log(R_start[2]),0.5,3,15),2)
-      R0.line<-strsplit(ctl.new[grep("R0",ctl.new)], " ")[[1]]
-      R0.line[c(3,4)]<-R0.draw
-      ctl.new[grep("R0",ctl.new)]<-paste(R0.line,collapse=" ")
-    }
     if(R_start[1]==0)
     {
       R0.draw<-R_start[2]
-      R0.line<-strsplit(ctl.new[grep("R0",ctl.new)], " ")[[1]]
-      R0.line[c(3,4)]<-R0.draw
-      ctl.new[grep("R0",ctl.new)]<-paste(R0.line,collapse=" ")
+      ctl.new$SR_parms[1,3:4]<-R0.draw
+      # R0.line<-strsplit(ctl.new[grep("R0",ctl.new)], " ")[[1]]
+      # R0.line[c(3,4)]<-R0.draw
+      # ctl.new[grep("R0",ctl.new)]<-paste(R0.line,collapse=" ")
     }
-    
+  
+    if(R_start[1]==1)
+    {
+      
 
-    #change h
-    if(SR_type<8)
-    {
-      h.line<-strsplit(ctl.new[grep("SR_BH_steep",ctl.new)], " ")[[1]]
-      h.line[c(3,4)]<-h.draw
-      ctl.new[grep("SR_BH_steep",ctl.new)]<-paste(h.line,collapse=" ")
+      R0.draw<-round(rlnormTrunc(1,log(R_start[2]),0.5,3,15),2)
+      ctl.new$SR_parms[1,3:4]<-R0.draw
+      # R0.line<-strsplit(ctl.new[grep("R0",ctl.new)], " ")[[1]]
+      # R0.line[c(3,4)]<-R0.draw
+      # ctl.new[grep("R0",ctl.new)]<-paste(R0.line,collapse=" ")
     }
     
-    if(SR_type>=8)
+    #change h
+    if(SR_type==3)
     {
+      ctl.new$SR_parms[2,3:4]<-h.draw
+      # h.line<-strsplit(ctl.new[grep("SR_BH_steep",ctl.new)], " ")[[1]]
+      # h.line[c(3,4)]<-h.draw
+      # ctl.new[grep("SR_BH_steep",ctl.new)]<-paste(h.line,collapse=" ")
+    }
+    
+    if(SR_type==9)
+    {
+      ctl.new$SR_parms[2,3:4]<-h.draw
+      ctl.new$SR_parms[3,3:4]<-SR_expo.out[i]
       h.line<-strsplit(ctl.new[grep("SR_RkrPower_steep",ctl.new)], " ")[[1]]
-      h.line[c(3,4)]<-h.draw
-      ctl.new[grep("SR_RkrPower_steep",ctl.new)]<-paste(h.line,collapse=" ")
-      SRexpo.line<-strsplit(ctl.new[grep("SR_RkrPower_gamma",ctl.new)], " ")[[1]]
-      SRexpo.line[c(3,4)]<-SR_expo.out[i]
-      ctl.new[grep("SR_RkrPower_gamma",ctl.new)]<-paste(SRexpo.line,collapse=" ")
+      # h.line[c(3,4)]<-h.draw
+      # ctl.new[grep("SR_RkrPower_steep",ctl.new)]<-paste(h.line,collapse=" ")
+      # SRexpo.line<-strsplit(ctl.new[grep("SR_RkrPower_gamma",ctl.new)], " ")[[1]]
+      # SRexpo.line[c(3,4)]<-SR_expo.out[i]
+      # ctl.new[grep("SR_RkrPower_gamma",ctl.new)]<-paste(SRexpo.line,collapse=" ")
     }  
     
     #change Sfrac and Beta
-    if(Zfrac.Beta.in[1]>=0)
+    if(SR_type==7 & Zfrac.Beta.in[1]>=0)
     {
-      Zfrac.line<-strsplit(ctl.new[grep("Zfrac",ctl.new)], " ")[[1]]
-      Zfrac.line[c(3,4)]<-Zfrac.draw
-      ctl.new[grep("Zfrac",ctl.new)]<-paste(Zfrac.line,collapse=" ")
+      ctl.new$SR_parms[2,3:4]<-Zfrac.draw
+      # Zfrac.line<-strsplit(ctl.new[grep("Zfrac",ctl.new)], " ")[[1]]
+      # Zfrac.line[c(3,4)]<-Zfrac.draw
+      # ctl.new[grep("Zfrac",ctl.new)]<-paste(Zfrac.line,collapse=" ")
     }
-    if(Zfrac.Beta.in[4]>=0)
+    if(SR_type==7 & Zfrac.Beta.in[4]>=0)
     {
-      Beta.line<-strsplit(ctl.new[grep("Beta",ctl.new)], " ")[[1]]
-      Beta.line[c(3,4)]<-Beta.draw
-      ctl.new[grep("Beta",ctl.new)]<-paste(Beta.line,collapse=" ")
+      ctl.new$SR_parms[3,3:4]<-Beta.draw
+      # Beta.line<-strsplit(ctl.new[grep("Beta",ctl.new)], " ")[[1]]
+      # Beta.line[c(3,4)]<-Beta.draw
+      # ctl.new[grep("Beta",ctl.new)]<-paste(Beta.line,collapse=" ")
     }
     
-    write(ctl.new,paste(filepath,"/",file.name[2],sep=""))
+    #write(ctl.new,paste(filepath,"/",file.name[2],sep=""))
+    SS_writectl(ctl.new, paste0(filepath,"/",file.name[2]), overwrite=TRUE,verbose=FALSE)      
     
     #Run model
     if(OStype=="Windows"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
@@ -561,23 +582,25 @@ SSS<-function(filepath,
     {
         xx<-1
         R0.explore<-seq(doR0.loop[2],doR0.loop[3],doR0.loop[4])
-        if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==TRUE){Dep.out.testR0<-10}
-        if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==FALSE){Dep.out.testR0<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])}
+        if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3]))==TRUE){Dep.out.testR0<-10}
+        if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3]))==FALSE){Dep.out.testR0<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3])}
       #  while(abs(as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8]))==0)
       while(abs(Dep.out.testR0-Dep.draw)>0.01)
       {
         print(paste0("IN THE LOOP: R0= ",R0.explore[xx]))
-        ctl.new<-readLines(paste(filepath,"/",file.name[2],sep=""))
-        R0.line<-strsplit(ctl.new[grep("R0",ctl.new)], " ")[[1]]
-        R0.line[c(3,4)]<-R0.explore[xx]
-        ctl.new[grep("R0",ctl.new)]<-paste(R0.line,collapse=" ")
-        write(ctl.new,paste(filepath,"/",file.name[2],sep=""))
+        ctl.new$SR_parms[1,3:4]<-R0.explore[xx]
+        SS_writectl(ctl.new, paste0(filepath,"/",file.name[2]), overwrite=TRUE,verbose=FALSE)      
+        # ctl.new<-readLines(paste(filepath,"/",file.name[2],sep=""))
+        # R0.line<-strsplit(ctl.new[grep("R0",ctl.new)], " ")[[1]]
+        # R0.line[c(3,4)]<-R0.explore[xx]
+        # ctl.new[grep("R0",ctl.new)]<-paste(R0.line,collapse=" ")
+        # write(ctl.new,paste(filepath,"/",file.name[2],sep=""))
         if(OStype=="Windows"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
         if(OStype=="OSX_Linux"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="./ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
         rep.new<-readLines(paste(filepath,"/Report.sso",sep=""))
-        if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==TRUE){Dep.out.testR0<-10}
-        if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3]))==FALSE){Dep.out.testR0<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])}
-        print(paste0("Is depletion difference < 0.01? ",(abs(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])-Dep.draw)<0.01)))
+        if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3]))==TRUE){Dep.out.testR0<-10}
+        if(is.na(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3]))==FALSE){Dep.out.testR0<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3])}
+        print(paste0("Is depletion difference < 0.01? ",(abs(as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3])-Dep.draw)<0.01)))
         xx<-xx+1
         if(xx==length(R0.explore)){break}
       }
@@ -594,6 +617,7 @@ SSS<-function(filepath,
         B_BMSY.out[i,iii]<-as.numeric(strsplit(rep.new[grep("Yr  B/Bmsy  F/Fmsy",rep.new)+iii], " ")[[1]][2])
      	}
     		
+#browser()
     Dep.series.out<-SB.out/SB.out[,1]
     Quant.out[i,1]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Fem_GP_1",rep.new)], " ")[[1]][3])
     Quant.out[i,2]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Fem_GP_1",rep.new)], " ")[[1]][3])
@@ -606,28 +630,30 @@ SSS<-function(filepath,
       Quant.out[i,7]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Mal_GP_1",rep.new)], " ")[[1]][3])
       Quant.out[i,8]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Mal_GP_1",rep.new)], " ")[[1]][3])
     }
-    if(SR_type<8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])}
-    if(SR_type>=8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_steep",rep.new)], " ")[[1]][3])}
-    if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][3])}
+    if(SR_type==3){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])}
+    if(SR_type==7){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_surv_Beta",rep.new)-1], " ")[[1]][3])}
+    if(SR_type==7){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_surv_Beta",rep.new)], " ")[[1]][3])}
+    if(SR_type==8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_steep",rep.new)], " ")[[1]][3])}
+    if(SR_type==8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][3])}
     Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
     Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
     Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])
     Quant.out[i,13]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
-    Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
-    Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
+    Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][2])
+    Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][2])
     Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
     Quant.out[i,17]<-as.numeric(strsplit(rep.new[grep("Bmsy/Bzero",rep.new)], " ")[[1]][1])
     #Quant.out[i,17]<-as.numeric(strsplit(forecast.file[grep("calculate_FMSY",forecast.file)+13],split="[[:blank:]]+")[[1]][2])/as.numeric(strsplit(forecast.file[grep("BIO_Smry_unfished",forecast.file)],split="[[:blank:]]+")[[1]][2])
-    Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
+    Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][3])
     Quant.out[i,19]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)], " ")[[1]][2])
     Quant.out[i,20]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)+2], " ")[[1]][2])
     Quant.out[i,21]<-as.numeric(strsplit(rep.new[grep("Convergence",rep.new)], " ")[[1]][2])
-    if(Dep.in[1]>=0){Quant.out[i,22]<-as.numeric(Dep.line[4])}
-    if(Dep.in[1]>=0){Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])}
+    if(Dep.in[1]>=0){Quant.out[i,22]<-as.numeric(dat.new$CPUE[2,4])}
+    if(Dep.in[1]>=0){Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3])}
     Quant.out[i,24]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8])
-    Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
-    Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
-    Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
+    Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][3])
+    Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][2])
+    Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][2])
     Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
     warnings.out<-readLines(paste(filepath,"/warning.sso",sep=""))
     num.warning<-as.numeric(strsplit(warnings.out[grep("N warnings",warnings.out)[1]], " ")[[1]][4])
@@ -722,28 +748,30 @@ SSS<-function(filepath,
         Quant.out[i,7]<-as.numeric(strsplit(rep.new[grep("L_at_Amax_Mal_GP_1",rep.new)], " ")[[1]][3])
         Quant.out[i,8]<-as.numeric(strsplit(rep.new[grep("VonBert_K_Mal_GP_1",rep.new)], " ")[[1]][3])
     }
-        if(SR_type<8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])}
-        if(SR_type>=8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_steep",rep.new)], " ")[[1]][3])}
-        if(SR_type>=8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][3])}
+        if(SR_type==3){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_BH_steep",rep.new)], " ")[[1]][3])}
+        if(SR_type==7){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_surv_Beta",rep.new)-1], " ")[[1]][3])}
+        if(SR_type==7){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_surv_Beta",rep.new)], " ")[[1]][3])}
+        if(SR_type==8){Quant.out[i,9]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_steep",rep.new)], " ")[[1]][3])}
+        if(SR_type==8){Quant.out[i,29]<-as.numeric(strsplit(rep.new[grep("SR_RkrPower_gamma",rep.new)], " ")[[1]][3])}
         Quant.out[i,10]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][3])
         Quant.out[i,11]<-as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
         Quant.out[i,12]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,13]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
-        Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
-        Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][3])
+        Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][2])
+        Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][2])
         Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
         Quant.out[i,17]<-as.numeric(strsplit(rep.new[grep("Bmsy/Bzero",rep.new)], " ")[[1]][1])
         #Quant.out[i,17]<-as.numeric(strsplit(forecast.file[grep("Maximum_Sustainable_Yield;_where_Yield_is_Dead_Catch",forecast.file)+14],split="[[:blank:]]+")[[1]][2])/as.numeric(strsplit(forecast.file[grep("BIO_Smry_unfished",forecast.file)],split="[[:blank:]]+")[[1]][2])
-        Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
+        Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][3])
         Quant.out[i,19]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)], " ")[[1]][2])
         Quant.out[i,20]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)+2], " ")[[1]][2])
         Quant.out[i,21]<-as.numeric(strsplit(rep.new[grep("Convergence",rep.new)], " ")[[1]][2])
-        Quant.out[i,22]<-as.numeric(Dep.line[4])
-        Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(Dep.line[1]),sep=""),rep.new)], " ")[[1]][3])
+        Quant.out[i,22]<-as.numeric(dat.new$CPUE[2,4])
+        Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,24]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8])
-        Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("Fstd_MSY",rep.new)], " ")[[1]][3])
-        Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
-        Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][3])
+        Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][3])
+        Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][2])
+        Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][2])
         Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
         starter.new<-readLines(paste(filepath,"/starter.ss",sep=""))
         par_line<-strsplit(starter.new[grep("ss.par",starter.new)], " ")[[1]]
