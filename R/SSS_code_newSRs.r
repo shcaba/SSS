@@ -132,10 +132,10 @@ SSS<-function(filepath,
     
     if(length(Dep.in)==3)
     {
-      if(Dep.in[1]==2){Dep.draw<-round(1-rbeta.ab(1,1-Dep.in[2],Dep.in[3],0.05,0.95),2)}
-      if(Dep.in[1]==3){Dep.draw<-round(rlnorm(1,log(Dep.in[2]),Dep.in[3]),2)}
-      if(Dep.in[1]==4){Dep.draw<-round(runif(1,Dep.in[2],Dep.in[3]),2)}
-      if(Dep.in[1]==10){Dep.draw<-round(rtnorm(1,Dep.in[2],Dep.in[3],0.01,1),2)}
+      if(Dep.in[1]==2){Dep.draw<-round(1-rbeta.ab(1,1-Dep.in[2],Dep.in[3],0.05,0.95),3)}
+      if(Dep.in[1]==3){Dep.draw<-round(rlnorm(1,log(Dep.in[2]),Dep.in[3]),3)}
+      if(Dep.in[1]==4){Dep.draw<-round(runif(1,Dep.in[2],Dep.in[3]),3)}
+      if(Dep.in[1]==10){Dep.draw<-round(rtnorm(1,Dep.in[2],Dep.in[3],0.01,1),3)}
       Input.draws[i,2]<-Dep.draw
     }
     if(length(Dep.in)>3)
@@ -791,7 +791,6 @@ SSS<-function(filepath,
     ii<-ii+1
     if(file.exists(paste(filepath,"/Report.sso",sep=""))){file.remove(paste(filepath,"/Forecast-report.sso",sep=""))}
     if(file.exists(paste(filepath,"/Report.sso",sep=""))){file.remove(paste(filepath,"/Report.sso",sep=""))}
-  }
   colnames(Quant.out)<-colnames(Quant.out.bad)<-c("M_f","L1_f","Linf_f","k_f","M_m","L1_m","Linf_m","k_m","h","R0","SB0",paste("SSB_",ts_yrs[2],sep=""),"Term_Yr_Dep",paste("OFL_",ofl_yrs[1],sep=""),paste("AdjCatch_",ofl_yrs[1],sep=""),"SBMSY/SB0","BMSY/B0","FMSY","-lnL","LL_survey","Gradient","Dep.Obs","Dep.Exp","R0_init",paste("F_",ts_yrs[2],"/FMSY",sep=""),paste("OFL_",ofl_yrs[2],sep=""),paste("AdjCatch_",ofl_yrs[2],sep=""),"Crash_penalty","Rick_gamma")
   if(ncol(Input.draws)==10){colnames(Input.draws)<-c("h","Dep","M_f","L1_f","Linf_f","k_f","M_m","L1_m","Linf_m","k_m")}
   if(ncol(Input.draws)==11){colnames(Input.draws)<-c("Sfrac","Dep","M_f","L1_f","Linf_f","k_f","Beta","M_m","L1_m","Linf_m","k_m")}
@@ -806,6 +805,8 @@ SSS<-function(filepath,
   names(Spp.quant.out)<-c("Priors","Posteriors","SB_series","Rel_Stock_status_series","Total_Biomass","Summary_Biomass","SPR","B/BMSY","Rejected_draws","Total draws","Runtime_minutes")
   SSS.out<-Spp.quant.out
   save(SSS.out,file=paste(filepath,"/SSS_out.DMP",sep=""))
+  
+  }
   return(Spp.quant.out)
 }
 
