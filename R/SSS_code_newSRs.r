@@ -56,7 +56,6 @@ SSS<-function(filepath,
   require(msm)
   require(EnvStats)
   require(r4ss)
-
   set.seed(seed.in)
   start.time<-Sys.time()
   Spp.quant.out<-list()
@@ -73,8 +72,8 @@ SSS<-function(filepath,
   sb.years<-c(ts_yrs[1]:ts_yrs[2])
   Quant.out<-as.data.frame(matrix(NA,nrow=reps,ncol=29))
   Quant.out.bad<-as.data.frame(matrix(NA,1,ncol=29))
-  SB.out<-TB.out<-SumAge.out<-SPR.out<-B_BMSY.out<-as.data.frame(matrix(NA,nrow=reps,ncol=length(sb.years)))
-  colnames(SB.out)<-colnames(TB.out)<-colnames(SumAge.out)<-colnames(SPR.out)<-colnames(B_BMSY.out)<-sb.years
+  SB.out<-TB.out<-SumAge.out<-SPR.out<-as.data.frame(matrix(NA,nrow=reps,ncol=length(sb.years)))
+  colnames(SB.out)<-colnames(TB.out)<-colnames(SumAge.out)<-colnames(SPR.out)<-sb.years
   
 #Input the file names and the summary age into the starter file
   starter.new <- SS_readstarter(file.path(filepath, 'starter.ss'),verbose=FALSE)
@@ -119,8 +118,8 @@ SSS<-function(filepath,
     #- values = no draws taken; one value fixed in the model
     #0 = normal
     #10 = truncated normal
-    #1 = symmetric beta (rbeta)
-    #2 = beta 
+    #1 = symmetric beta 
+    #2 = beta (rbeta)
     #3 = lognormal
     #30 = truncated lognormal
     #4 = uniform
@@ -613,11 +612,10 @@ SSS<-function(filepath,
     		SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])
     		TB.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][5])
     		SumAge.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][6])
-    		SPR.out[i,iii]<-as.numeric(strsplit(rep.new[grep("SPR_series",rep.new)+5+iii], " ")[[2]][8])
-        B_BMSY.out[i,iii]<-as.numeric(strsplit(rep.new[grep("Yr  B/Bmsy  F/Fmsy",rep.new)+iii], " ")[[1]][2])
+    		SPR.out[i,iii]<-1-as.numeric(strsplit(rep.new[grep(paste("SPRratio_",sb.years[iii]+1,sep=""),rep.new)], " ")[[1]][3])
+ #       B_BMSY.out[i,iii]<-as.numeric(strsplit(rep.new[grep("Yr  B/Bmsy  F/Fmsy",rep.new)+iii], " ")[[1]][2])
      	}
-    		
-#browser()
+	
     Dep.series.out<-SB.out/SB.out[,1]
     Quant.out[i,1]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Fem_GP_1",rep.new)], " ")[[1]][3])
     Quant.out[i,2]<-as.numeric(strsplit(rep.new[grep("L_at_Amin_Fem_GP_1",rep.new)], " ")[[1]][3])
@@ -641,17 +639,17 @@ SSS<-function(filepath,
     Quant.out[i,13]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
     Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][2])
     Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][2])
-    Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
+    Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][2])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
     Quant.out[i,17]<-as.numeric(strsplit(rep.new[grep("Bmsy/Bzero",rep.new)], " ")[[1]][1])
     #Quant.out[i,17]<-as.numeric(strsplit(forecast.file[grep("calculate_FMSY",forecast.file)+13],split="[[:blank:]]+")[[1]][2])/as.numeric(strsplit(forecast.file[grep("BIO_Smry_unfished",forecast.file)],split="[[:blank:]]+")[[1]][2])
-    Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][3])
+    Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][2])
     Quant.out[i,19]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)], " ")[[1]][2])
     Quant.out[i,20]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)+2], " ")[[1]][2])
     Quant.out[i,21]<-as.numeric(strsplit(rep.new[grep("Convergence",rep.new)], " ")[[1]][2])
     if(Dep.in[1]>=0){Quant.out[i,22]<-as.numeric(dat.new$CPUE[2,4])}
     if(Dep.in[1]>=0){Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3])}
     Quant.out[i,24]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8])
-    Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][3])
+    Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][2])
     Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][2])
     Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][2])
     Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
@@ -733,8 +731,8 @@ SSS<-function(filepath,
     		SB.out[i,iii]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",sb.years[iii],sep=""),rep.new)], " ")[[1]][3])
     		TB.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][5])
     		SumAge.out[i,iii]<-as.numeric(strsplit(rep.new[grep("TIME_SERIES",rep.new)+3+iii], " ")[[2]][6])
-    		SPR.out[i,iii]<-as.numeric(strsplit(rep.new[grep("SPR_series",rep.new)+5+iii], " ")[[2]][8])
-        B_BMSY.out[i,iii]<-as.numeric(strsplit(rep.new[grep("Yr  B/Bmsy  F/Fmsy",rep.new)+iii], " ")[[1]][2])
+    		SPR.out[i,iii]<-1-as.numeric(strsplit(rep.new[grep(paste("SPRratio_",sb.years[iii]+1,sep=""),rep.new)], " ")[[1]][3])
+#        B_BMSY.out[i,iii]<-as.numeric(strsplit(rep.new[grep("Yr  B/Bmsy  F/Fmsy",rep.new)+iii], " ")[[1]][2])
     	}
      Dep.series.out<-SB.out/SB.out[,1]
         Quant.out[i,1]<-as.numeric(strsplit(rep.new[grep("NatM_p_1_Fem_GP_1",rep.new)], " ")[[1]][3])
@@ -759,17 +757,17 @@ SSS<-function(filepath,
         Quant.out[i,13]<-as.numeric(strsplit(rep.new[grep(paste("SSB_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
         Quant.out[i,14]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][2])
         Quant.out[i,15]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[1],sep=""),rep.new)], " ")[[1]][2])
-        Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
+        Quant.out[i,16]<-as.numeric(strsplit(rep.new[grep("SSB_MSY",rep.new)], " ")[[1]][2])/as.numeric(strsplit(rep.new[grep("SSB_Initial",rep.new)], " ")[[1]][3])
         Quant.out[i,17]<-as.numeric(strsplit(rep.new[grep("Bmsy/Bzero",rep.new)], " ")[[1]][1])
         #Quant.out[i,17]<-as.numeric(strsplit(forecast.file[grep("Maximum_Sustainable_Yield;_where_Yield_is_Dead_Catch",forecast.file)+14],split="[[:blank:]]+")[[1]][2])/as.numeric(strsplit(forecast.file[grep("BIO_Smry_unfished",forecast.file)],split="[[:blank:]]+")[[1]][2])
-        Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][3])
+        Quant.out[i,18]<-as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][2])
         Quant.out[i,19]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)], " ")[[1]][2])
         Quant.out[i,20]<-as.numeric(strsplit(rep.new[grep("TOTAL",rep.new)+2], " ")[[1]][2])
         Quant.out[i,21]<-as.numeric(strsplit(rep.new[grep("Convergence",rep.new)], " ")[[1]][2])
         Quant.out[i,22]<-as.numeric(dat.new$CPUE[2,4])
         Quant.out[i,23]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][3])
         Quant.out[i,24]<-as.numeric(strsplit(rep.new[grep("R0",rep.new)], " ")[[1]][8])
-        Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][3])
+        Quant.out[i,25]<-as.numeric(strsplit(rep.new[grep(paste("F_",ts_yrs[2],sep=""),rep.new)], " ")[[1]][3])/as.numeric(strsplit(rep.new[grep("annF_MSY",rep.new)], " ")[[1]][2])
         Quant.out[i,26]<-as.numeric(strsplit(rep.new[grep(paste("OFLCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][2])
         Quant.out[i,27]<-as.numeric(strsplit(rep.new[grep(paste("ForeCatch_",ofl_yrs[2],sep=""),rep.new)], " ")[[1]][2])
         Quant.out[i,28]<-as.numeric(strsplit(rep.new[grep("Crash_Pen",rep.new)], " ")[[1]][2])
@@ -801,8 +799,8 @@ SSS<-function(filepath,
       colnames(Input.draws)[c(ltcolnames-1,ltcolnames)]<-c("Beta","Obj_fxn")
     }
   end.time<-Sys.time()
-  Spp.quant.out<-list(Input.draws,Quant.out,SB.out,Dep.series.out,TB.out,SumAge.out,SPR.out,B_BMSY.out,Quant.out.bad,ii-1,(as.numeric(end.time)-as.numeric(start.time))/60)
-  names(Spp.quant.out)<-c("Priors","Posteriors","SB_series","Rel_Stock_status_series","Total_Biomass","Summary_Biomass","SPR","B/BMSY","Rejected_draws","Total draws","Runtime_minutes")
+  Spp.quant.out<-list(Input.draws,Quant.out,SB.out,Dep.series.out,TB.out,SumAge.out,SPR.out,Quant.out.bad,ii-1,(as.numeric(end.time)-as.numeric(start.time))/60)
+  names(Spp.quant.out)<-c("Priors","Posteriors","SB_series","Rel_Stock_status_series","Total_Biomass","Summary_Biomass","SPR","Rejected_draws","Total draws","Runtime_minutes")
   SSS.out<-Spp.quant.out
   save(SSS.out,file=paste(filepath,"/SSS_out.DMP",sep=""))
   
