@@ -1,7 +1,12 @@
 ## Simple Stock Synthesis 
 
-Simple Stock Synthesis (SSS) is an assessment method for application to data-limited stocks.  
-*Code available on this website comes with no warranty or guarantee of accuracy.*
+Simple Stock Synthesis (SSS) is an assessment method for application to data-limited stocks that estimates catch limits.
+It is an age-structured version of other catch-only methods such as DBSRA and CMSY.
+
+The "background literature" folder contains papers on the methods origin and development. 
+
+An GUI version of SSS is available using the SS-DL tool (https://github.com/shcaba/SS-DL-tool).
+The SS-DL tool incorporates the SSS approach into a suite of methods ranging from data-limited to data-rich methods all in one framework/package.
 
 ## Installation
 

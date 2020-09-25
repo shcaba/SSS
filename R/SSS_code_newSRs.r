@@ -10,8 +10,10 @@
 ##' @param FMSY_M.in vector defining the Fmsy/M ratio distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are; negative value = ?, 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.
 ##' @param BMSY_B0.in vector defining the Bmsy/B0 ratio distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are; negative value = ?, 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.
 ##' @param L1.in vector defining the minimum length for a given age. Setting this to 0 in the control file makes it the VBGF t0. A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)
-##' @param Linf.in vector defining the maximum length. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)
-##' @param k.in vector defining the growth coefficient k. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)
+##' @param Linf.k.cor input defining the correlation between Linf and k when using the multivariate normal distribution
+##' @param Linf.in vector defining the maximum length. This is an optional feature. Expected input values are c(prior type (only -1 and 1 (normal) options),female mean, female sd, prior type (only -1 and 1 (normal) options),male mean, male sd)
+##' @param k.in vector defining the growth coefficient k. This is an optional feature. Expected input values are c(prior type (only -1 and 1 (normal) options), female mean, female sd, prior type(only -1 and 1 (normal) options),male mean, male sd)
+##' @param t0.in vector defining the t0 parameter to calculate the L1 paremter for SS. Expected input values are c(prior type (only -1 and 1 (normal) options), female mean, female sd, prior type (only -1 and 1 (normal) options),male mean, male sd)
 ##' @param Zfrac.Beta.in is the Zfrac beta for stock recruit function 7 in Stock Synthesis (Survivorship function). Sometimes used with elasmobranchs. Inputs are prior type (- values skips the draws) and prior type inputs.
 ##' @param R_start vector allowing the user to control the starting R0 value in the control file. Expected value is c( switch option, input value) where the switch optionas are 1= draw from a random draw from a truncated lognormal distribution based on the input value and 0 = start from the input value.
 ##' @param doR0.loop allows for a profile over initial R0 values in order to find a converged model. It will stop the profile once a converged model is found. Inputs are feature on/off, staring profile value, ending profile, profile step. A 0 for the first value means you will only consider models that start at the given intial R0. Highly recommended to keep this as TRUE, though it can take more computational time.  
@@ -48,7 +50,6 @@ SSS<-function(filepath,
               sum_age=0,
               ts_yrs=NA,
               pop.ltbins=NA,
-#              ofl_yrs=c(2021,2022),
               sexes=F,
               BH_FMSY_comp=F,
               OStype="Windows")
@@ -70,7 +71,6 @@ SSS<-function(filepath,
   OFL.out<-ABC.out<-list()
   Input.draws<-as.data.frame(matrix(NA,nrow=reps,ncol=10))
   if(SR_type==7){Input.draws<-as.data.frame(matrix(NA,nrow=reps,ncol=11))}
-#  Input.draws.M<-as.data.frame(matrix(NA,nrow=reps,ncol=4))
   if(SR_type>=8 | h.in[1]==99 | BH_FMSY_comp==T)
   {
     SR_expo.out<-SRMQ_par<-rep(NA,reps)
@@ -177,7 +177,6 @@ SSS<-function(filepath,
           if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
           if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
           if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
-          #Input.draws.M[i,1]<-M.draw.M
           Input.draws[i,7]<-M.draw.M
         }
         }        
@@ -274,7 +273,6 @@ SSS<-function(filepath,
               if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
               if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
               if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
-              #Input.draws.M[i,1]<-M.draw.M
               Input.draws[i,7]<-M.draw.M
             }
             if(length(M.in)>6){Input.draws[i,7]<-M.draw.M<-M.in[i,2]}
@@ -364,7 +362,6 @@ SSS<-function(filepath,
               if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
               if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
               if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
-              #Input.draws.M[i,1]<-M.draw.M
               Input.draws[i,7]<-M.draw.M
             }
             if(length(M.in)>6){Input.draws[i,7]<-M.draw.M<-M.in[i,2]}

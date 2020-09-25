@@ -20,7 +20,6 @@ vignette("sss")
 ## h.in vector defining the steepness distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.
 ## FMSY_M.in vector defining the Fmsy/M ratio distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are; negative value = ?, 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.
 ## BMSY_B0.in vector defining the Bmsy/B0 ratio distribution, mean, and sd. Expected input is c(distribution, mean, sd). Distribution options are; negative value = ?, 2 = truncated beta, 10 = truncated normal, 30 = truncated lognormal, 4 = uniform.
-## L1.in vector defining the minimum length. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)
 ## Linf.in vector defining the maximum length. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)
 ## k.in vector defining the growth coefficient k. This is an optional feature.  A vector of zeros will not draw values for this value. Expected input values are c(female mean, female sd, male mean, male sd)
 ## Zfrac.Beta.in
@@ -45,12 +44,15 @@ POP.SSS.BH<-SSS(filepath= Dir.in, # location to run the model
                 Dep.in=c(2, 0.60, 0.1), # c(distribution shape, mean, sd)
                 M.in=c(3, 0.05, 0.2, 3, 0.05, 0.2), # c(distrbution shape for females, mean for females, sd for females, distribution shape for males, mean for males, sd for males)
                 h.in=c(2, 0.70, 0.152), # c(distribution, mean, sd)
+                Linf.k.cor=-0.9,
+                Linf.in=c(1,41.6,0,-1,41.6,0),
+                k.in=c(1,0.167,0,-1,0.167,0),
+                t0.in=c(1,0,0,-1,0,0),
                 FMSY_M.in=c(-30,0.8,0.2), # c(distribution, mean, sd)
                 BMSY_B0.in=c(-2,0.4,0.05), # c(distribution, mean, sd)
                 R_start=c(0,9), # c( switch option, input value)
                 ts_yrs=c(1918,2016),
                 pop.ltbins=NA,
-                ofl_yrs=c(2017,2018,2019), # projection years 
                 sexes=T # unique male and female M
 )
 
@@ -71,10 +73,13 @@ POP.SSS.gR<-SSS(filepath=Dir.in,
                 Dep.in=c(2,0.32,0.2),
                 SR_type=9,
                 h.in=c(-2,0.779,0.152),
+                Linf.k.cor=-0.9,
+                Linf.in=c(1,41.6,0,-1,41.6,0),
+                k.in=c(1,0.167,0,-1,0.167,0),
+                t0.in=c(1,0,0,-1,0,0),
                 FMSY_M.in=c(30,0.8,0.2),
                 BMSY_B0.in=c(2,0.4,0.05),
                 R_start=c(0,9),
-                ofl_yrs=c(2017,2018,2019),
                 ts_yr=c(1918, 2016),
                 sexes=T)
 
