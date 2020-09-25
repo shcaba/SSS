@@ -38,9 +38,10 @@ SSS<-function(filepath,
               h.in=c(1,0.6,0.2),
               FMSY_M.in=c(-1,0.5,0.1),
               BMSY_B0.in=c(-1,0.5,0.1),
-              L1.in=c(0,0,0,0),
-              Linf.in=c(0,0,0,0),
-              k.in=c(0,0,0,0),
+              Linf.k.cor=-0.9,
+              Linf.in=c(-1,0,0,-1,0,0),
+              k.in=c(-1,0,0,-1,0,0),
+              t0.in=c(-1,0,0,-1,0,0),
               Zfrac.Beta.in=c(-99,0.2,0.6,-99,0.5,2),
               R_start=c(0,8),
               doR0.loop=c(1,4.1,12.1,0.5),
@@ -56,6 +57,12 @@ SSS<-function(filepath,
   require(msm)
   require(EnvStats)
   require(r4ss)
+  require(tmvtnorm)
+
+  VBGF.age<-function(Linf,k,t0,lt){ 
+    t0 - (log(1 - (lt / Linf)) / k) 
+  } 
+
   set.seed(seed.in)
   start.time<-Sys.time()
   SSS.output.list<-list()
@@ -63,7 +70,7 @@ SSS<-function(filepath,
   OFL.out<-ABC.out<-list()
   Input.draws<-as.data.frame(matrix(NA,nrow=reps,ncol=10))
   if(SR_type==7){Input.draws<-as.data.frame(matrix(NA,nrow=reps,ncol=11))}
-  Input.draws.M<-as.data.frame(matrix(NA,nrow=reps,ncol=4))
+#  Input.draws.M<-as.data.frame(matrix(NA,nrow=reps,ncol=4))
   if(SR_type>=8 | h.in[1]==99 | BH_FMSY_comp==T)
   {
     SR_expo.out<-SRMQ_par<-rep(NA,reps)
@@ -106,7 +113,7 @@ SSS<-function(filepath,
   # sum_age_line[1]<-sum_age
   # starter.new[grep("summary biomass",starter.new)]<-paste(sum_age_line, collapse=" ")
   # write(starter.new,paste(filepath,"/starter.ss",sep=""))
-    
+
   i<-1
   ii<-1
   xxx<-1
@@ -170,31 +177,66 @@ SSS<-function(filepath,
           if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
           if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
           if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
-          Input.draws.M[i,1]<-M.draw.M
+          #Input.draws.M[i,1]<-M.draw.M
           Input.draws[i,7]<-M.draw.M
         }
         }        
         if(length(M.in)>6){Input.draws[i,7]<-M.draw.M<-M.in[i,2]}
       }
     }
-
+#browser()
     #Growth parameters
-    #Covar_Linf_k<-Cor_Linf_k*(Linf_CV*Linf*k_CV*k) #caluclate covariance matrix for multivariate sampling
-    #Linf_k_sigma <- matrix(c((Linf*Linf_CV)^2,Covar_Linf_k,Covar_Linf_k,(k*k_CV)^2),2,2) #Set-up the variance-covariance matrix for multivariate sampling
+#    if(Linf.in[1]>-1&k.in[1]>-1)
+#    {
+      Covar_Linf_k<-Linf.k.cor*((Linf.in[3]+0.000001)*Linf.in[2]*(k.in[3]+0.000001)*k.in[2]) #caluclate covariance matrix for multivariate sampling
+      Linf_k_sigma <- matrix(c((Linf.in[2]*(Linf.in[3]+0.000001))^2,Covar_Linf_k,Covar_Linf_k,(k.in[2]*(k.in[3]+0.000001))^2),2,2) #Set-up the variance-covariance matrix for multivariate sampling
+      Linf_k_samps<-rtmvnorm(1,c(Linf.in[2],k.in[2]),Linf_k_sigma,lower=rep(0,length(c(Linf.in[2],k.in[2]))))
+      Linf.draw<-Input.draws[i,5]<-Linf_k_samps[1]
+      k.draw<-Input.draws[i,6]<-Linf_k_samps[2]
+      #if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[2],L1.in[3]),2); Input.draws[i,4]<-L1.draw}
+      t0.draw<-round(rnorm(1,t0.in[2],t0.in[3]),3)
+      L1.draw<-Input.draws[i,4]<-VBGF.age(Linf.draw,k.draw,t0.draw,0)
     
-    if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[1],L1.in[2]),2); Input.draws[i,4]<-L1.draw}
-    if(sum(Linf.in[1:2])>0){Linf.draw<-round(rnorm(1,Linf.in[1],Linf.in[2]),2); Input.draws[i,5]<-Linf.draw}
-    if(sum(k.in[1:2])>0){k.draw<-round(rnorm(1,k.in[1],k.in[2]),2); Input.draws[i,6]<-k.draw}
+#    }  
+
+#     if(any(Linf.in[1]<1&k.in[1]<1)&!all(Linf.in[1]<1&k.in[1]<1))
+#     {
+# #      if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[2],L1.in[3]),2); Input.draws[i,4]<-L1.draw}
+#       Linf.draw<-Input.draws[i,5]<-round(rnorm(1,Linf.in[2],Linf.in[3]),2)
+#       k.draw<-Input.draws[i,6]<-round(rnorm(1,k.in[2],k.in[3]),2)
+#       t0.draw<-round(rnorm(1,t0.in[2],t0.in[3]),3)
+#       L1.draw<-Input.draws[i,4]<-VBGF(Linf.draw,k.draw,t0.draw,0)
+#    }
+
     #Male draws
     if(sexes==T)
     {
-      if(sum(L1.in[3:4])>0) { 
-        L1.draw.M <- round(rnorm(1,L1.in[3], L1.in[4]), 2)
-        Input.draws.M[i,2]<-L1.draw.M
-      }
+      # if(sum(L1.in[3:4])>0) { 
+      #   L1.draw.M <- round(rnorm(1,L1.in[3], L1.in[4]), 2)
+      # }
 
-      if(sum(Linf.in[3:4])>0){Linf.draw.M<-round(rnorm(1,Linf.in[3],Linf.in[4]),2); Input.draws.M[i,3]<-Linf.draw.M}
-      if(sum(k.in[3:4])>0){k.draw.M<-round(rnorm(1,k.in[3],k.in[4]),2); Input.draws.M[i,4]<-k.draw.M}
+#        if(Linf.in[4]>-1&k.in[4]>-1)
+ #         {
+              Covar_Linf_k<-Linf.k.cor*((Linf.in[6]+0.000001)*Linf.in[5]*k.in[6]*k.in[5]) #caluclate covariance matrix for multivariate sampling
+              Linf_k_sigma <- matrix(c((Linf.in[5]*(Linf.in[6]++0.000001))^2,Covar_Linf_k,Covar_Linf_k,(k.in[5]*(k.in[6]+0.000001))^2),2,2) #Set-up the variance-covariance matrix for multivariate sampling
+              Linf_k_samps<-rtmvnorm(1,c(Linf.in[5],k.in[5]),Linf_k_sigma,lower=rep(0,length(c(Linf.in[5],k.in[5]))))
+              Linf.draw.M<-Input.draws[i,9]<-Linf_k_samps[1]
+              k.draw.M<-Input.draws[i,10]<-Linf_k_samps[2]
+              #if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[2],L1.in[3]),2); Input.draws[i,4]<-L1.draw}
+              
+              t0.draw.M<-round(rnorm(1,t0.in[2],t0.in[3]),3)
+              L1.draw.M<-Input.draws[i,8]<-VBGF.age(Linf.draw.M,k.draw.M,t0.draw.M,0)
+  #        }  
+
+      #    if(any(Linf.in[4]<1&k.in[4]<1)&!all(Linf.in[4]<1&k.in[4]<1))
+      #    {
+      #      if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[2],L1.in[3]),2); Input.draws[i,4]<-L1.draw}
+      #      Linf.draw.M<-Input.draws.M[i,3]<-round(rnorm(1,Linf.in[5],Linf.in[6]),2)
+      #      k.draw.M<-Input.draws.M[i,4]<-round(rnorm(1,k.in[5],k.in[6]),2)
+      #      t0.draw>M<-round(rnorm(1,t0.in[5],t0.in[6]),3)
+      #      L1.draw>M<-Input.draws.M[i,2]<-VBGF(Linf.draw.M,k.draw.M,t0.draw.M,0)
+      #   }
+
     }
     
     #Steenpess
@@ -232,7 +274,7 @@ SSS<-function(filepath,
               if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
               if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
               if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
-              Input.draws.M[i,1]<-M.draw.M
+              #Input.draws.M[i,1]<-M.draw.M
               Input.draws[i,7]<-M.draw.M
             }
             if(length(M.in)>6){Input.draws[i,7]<-M.draw.M<-M.in[i,2]}
@@ -322,7 +364,7 @@ SSS<-function(filepath,
               if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
               if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
               if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
-              Input.draws.M[i,1]<-M.draw.M
+              #Input.draws.M[i,1]<-M.draw.M
               Input.draws[i,7]<-M.draw.M
             }
             if(length(M.in)>6){Input.draws[i,7]<-M.draw.M<-M.in[i,2]}
@@ -432,78 +474,27 @@ SSS<-function(filepath,
     #change Depletion
     if(Dep.in[1]>=0)
     {
-      # Dep.line<-strsplit(dat.new[grep("DEPLETION",dat.new)], " ")[[1]]
-      # fleet_num<-Dep.line[3]
-      # Dep.line[4]<-Dep.draw
-      # dat.new[grep("DEPLETION",dat.new)]<-paste(Dep.line,collapse=" ")
-      # write(dat.new,paste(filepath,"/",file.name[1],sep=""))
       dat.new$CPUE[2,4]<-Dep.draw
       SS_writedat(dat.new, paste0(filepath,"/",file.name[1]), overwrite=TRUE,verbose=FALSE)      
     }
+
     #change M
     Sys.sleep(1)
-    if(M.in[1]>=0)
-    {
-      ctl.new$MG_parms[1,3]<-M.draw
-      #M.line<-strsplit(ctl.new[grep("NatM_p_1_Fem_GP_1",ctl.new)], " ")[[1]]
-      #M.line[c(3,4)]<-M.draw
-      #ctl.new[grep("NatM_p_1_Fem_GP_1",ctl.new)]<-paste(M.line,collapse=" ")
-    }
+    if(M.in[1]>=0){ctl.new$MG_parms[1,3]<-M.draw}
     #change growth parameters
-    if(sum(L1.in[1:2])>0)
-    {
       ctl.new$MG_parms[2,3:4]<-L1.draw
-      # L1.line<-strsplit(ctl.new[grep("L_at_Amin_Fem_GP_1",ctl.new)], " ")[[1]]
-      # L1.line[c(3,4)]<-L1.draw
-      # ctl.new[grep("L_at_Amin_Fem_GP_1",ctl.new)]<-paste(L1.line,collapse=" ")
-    }
-    if(sum(Linf.in[1:2])>0)
-    {
       ctl.new$MG_parms[3,3:4]<-Linf.draw
-    #   Linf.line<-strsplit(ctl.new[grep("L_at_Amax_Fem_GP_1",ctl.new)], " ")[[1]]
-    #   Linf.line[c(3,4)]<-Linf.draw
-    #   ctl.new[grep("L_at_Amax_Fem_GP_1",ctl.new)]<-paste(Linf.line,collapse=" ")
-    }
-    if(sum(k.in[1:2])>0)
-    {
       ctl.new$MG_parms[4,3:4]<-k.draw
-      # k.line<-strsplit(ctl.new[grep("VonBert_K_Fem_GP_1",ctl.new)], " ")[[1]]
-      # k.line[c(3,4)]<-k.draw
-      # ctl.new[grep("VonBert_K_Fem_GP_1",ctl.new)]<-paste(k.line,collapse=" ")
-    }
+
     #change male pararmeters
     if(sexes==T)
     {
       #change M
-      if(M.in[4]>=0)
-      {
-        ctl.new$MG_parms[13,3]<-M.draw.M
-        # M.line.M<-strsplit(ctl.new[grep("NatM_p_1_Mal_GP_1",ctl.new)], " ")[[1]]
-        # M.line.M[c(3,4)]<-M.draw.M
-        # ctl.new[grep("NatM_p_1_Mal_GP_1",ctl.new)]<-paste(M.line.M,collapse=" ")
-      }
+      if(M.in[4]>=0){ctl.new$MG_parms[13,3]<-M.draw.M}
       #change growth parameters
-      if(sum(L1.in[3:4])>0)
-      {
         ctl.new$MG_parms[14,3]<-L1.draw.M
-        # L1.line.M<-strsplit(ctl.new[grep("L_at_Amin_Mal_GP_1",ctl.new)], " ")[[1]]
-        # L1.line.M[c(3,4)]<-L1.draw.M
-        # ctl.new[grep("L_at_Amin_Mal_GP_1",ctl.new)]<-paste(L1.line.M,collapse=" ")
-      }
-      if(sum(Linf.in[3:4])>0)
-      {
         ctl.new$MG_parms[15,3]<-Linf.draw.M
-        # Linf.line.M<-strsplit(ctl.new[grep("L_at_Amax_Mal_GP_1",ctl.new)], " ")[[1]]
-        # Linf.line.M[c(3,4)]<-Linf.draw.M
-        # ctl.new[grep("L_at_Amax_Mal_GP_1",ctl.new)]<-paste(Linf.line.M,collapse=" ")
-      }
-      if(sum(k.in[3:4])>0)
-      {
         ctl.new$MG_parms[16,3]<-k.draw.M
-        # k.line.M<-strsplit(ctl.new[grep("VonBert_K_Mal_GP_1",ctl.new)], " ")[[1]]
-        # k.line.M[c(3,4)]<-k.draw.M
-        # ctl.new[grep("VonBert_K_Mal_GP_1",ctl.new)]<-paste(k.line.M,collapse=" ")
-      }
     }
     
     ctl.new$SR_function<-SR_type
