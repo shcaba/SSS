@@ -5,9 +5,38 @@
 ##' @author Jason Cope
 ##' @export
 
-RUN.SS<-function(path, ss.exe="ss",ss.cmd=" -nohess -nox")
-{
-  navigate <- paste("cd ",path,sep="")
+RUN.SS<-function(path,ss.cmd=" -nohess -nox",OS.in=NA){ 
+  navigate <- paste("cd ", path, sep="") 
+if(OS.in=="Windows") 
+  {
+    command <- paste0(navigate," & ", "ss", ss.cmd) 
+    shell(command, invisible=TRUE, translate=TRUE)
+  } 
+if(OS.in=="Mac")  
+  {
+    
+    command <- c(paste("cd", path), "chmod +x ./ss_mac","./ss_mac") 
+    system(paste(command, collapse=";"),invisible=TRUE)
+    
+    #command <- paste0(path,"/./ss_mac", ss.cmd) 
+    #system(command, invisible=TRUE)
+  } 
+if(OS.in=="Linux") 
+  {
+    command <- c(paste("cd", path), "chmod +x ./ss_linux","./ss_linux") 
+    system(paste(command, collapse=";"), invisible=TRUE)
+  } 
+ else{
   command <- paste(navigate," & ",ss.exe,ss.cmd,sep="")
-  shell(command,invisible=TRUE,translate=TRUE)
-}
+  shell(command,invisible=TRUE,translate=TRUE) 	
+ } 
+}  
+
+
+
+# RUN.SS<-function(path, ss.exe="ss",ss.cmd=" -nohess -nox")
+# {
+#   navigate <- paste("cd ",path,sep="")
+#   command <- paste(navigate," & ",ss.exe,ss.cmd,sep="")
+#   shell(command,invisible=TRUE,translate=TRUE) 	
+# }
