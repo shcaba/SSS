@@ -26,10 +26,7 @@ if(OS.in=="Linux")
     command <- c(paste("cd", path), "chmod +x ./ss_linux","./ss_linux") 
     system(paste(command, collapse=";"), invisible=TRUE)
   } 
- else{
-  command <- paste(navigate," & ",ss.exe,ss.cmd,sep="")
-  shell(command,invisible=TRUE,translate=TRUE) 	
- } 
+  
 }  
 
 

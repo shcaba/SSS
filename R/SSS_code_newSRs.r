@@ -183,7 +183,7 @@ SSS<-function(filepath,
         if(length(M.in)>6){Input.draws[i,7]<-M.draw.M<-M.in[i,2]}
       }
     }
-#browser()
+
     #Growth parameters
 #    if(Linf.in[1]>-1&k.in[1]>-1)
 #    {
