@@ -60,6 +60,10 @@ SSS<-function(filepath,
   require(r4ss)
   require(tmvtnorm)
 
+  VBGF<-function(Linf, k, t0, ages){ 
+   Linf * (1 - exp(-k * (ages - t0))) 
+  } 
+  
   VBGF.age<-function(Linf,k,t0,lt){ 
     t0 - (log(1 - (lt / Linf)) / k) 
   } 
@@ -194,7 +198,7 @@ SSS<-function(filepath,
       k.draw<-Input.draws[i,6]<-Linf_k_samps[2]
       #if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[2],L1.in[3]),2); Input.draws[i,4]<-L1.draw}
       t0.draw<-round(rnorm(1,t0.in[2],t0.in[3]),3)
-      L1.draw<-Input.draws[i,4]<-VBGF.age(Linf.draw,k.draw,t0.draw,0)
+      L1.draw<-Input.draws[i,4]<-Input.draws[i,8]<-0
     
 #    }  
 
@@ -224,7 +228,7 @@ SSS<-function(filepath,
               #if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[2],L1.in[3]),2); Input.draws[i,4]<-L1.draw}
               
               t0.draw.M<-round(rnorm(1,t0.in[2],t0.in[3]),3)
-              L1.draw.M<-Input.draws[i,8]<-VBGF.age(Linf.draw.M,k.draw.M,t0.draw.M,0)
+              L1.draw.M<-Input.draws[i,8]<-VBGF(Linf.draw.M,k.draw.M,t0.draw.M,t0.draw)
   #        }  
 
       #    if(any(Linf.in[4]<1&k.in[4]<1)&!all(Linf.in[4]<1&k.in[4]<1))
@@ -479,7 +483,8 @@ SSS<-function(filepath,
     Sys.sleep(1)
     if(M.in[1]>=0){ctl.new$MG_parms[1,3]<-M.draw}
     #change growth parameters
-      ctl.new$MG_parms[2,3:4]<-L1.draw
+      ctl.new$Growth_Age_for_L1<-t0.draw
+      ctl.new$MG_parms[2,3:4]<-ctl.new$MG_parms[14,3]<-0
       ctl.new$MG_parms[3,3:4]<-Linf.draw
       ctl.new$MG_parms[4,3:4]<-k.draw
 
