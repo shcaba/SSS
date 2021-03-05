@@ -29,3 +29,5 @@ A vignette is not yet available but is being created and will be available using
 ```S
 vignette(sss)
 ```
+
+Once installed, the SSS approach can be run through the function, or using the SS-DL tool GUI (https://github.com/shcaba/SS-DL-tool).
