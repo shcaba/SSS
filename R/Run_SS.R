@@ -5,11 +5,11 @@
 ##' @author Jason Cope
 ##' @export
 
-RUN.SS<-function(path,ss.cmd=" -nohess -nox",OS.in=NA){ 
+RUN.SS<-function(path,ss.exe="ss",ss.cmd=" -nohess -nox",OS.in=NA){ 
   navigate <- paste("cd ", path, sep="") 
 if(OS.in=="Windows") 
   {
-    command <- paste0(navigate," & ", "ss", ss.cmd) 
+    command <- paste0(navigate," & ", ss.exe, ss.cmd) 
     shell(command, invisible=TRUE, translate=TRUE)
   } 
 if(OS.in=="Mac")  
