@@ -139,12 +139,13 @@ SSS<-function(filepath,
     # ctl.new<-readLines(paste(filepath,"/",file.name[2],sep=""))
     dat.new<-SS_readdat(file.path(filepath, file.name[1]),verbose=FALSE)
     ctl.new<-SS_readctl(file.path(filepath, file.name[2]),use_datlist = TRUE, datlist=dat.new,verbose=FALSE)
+    
     if(length(Dep.in)==3)
     {
-      if(Dep.in[1]==2){Dep.draw<-round(1-rbeta.ab(1,1-Dep.in[2],Dep.in[3],0.05,0.95),3)}
-      if(Dep.in[1]==3){Dep.draw<-round(rlnorm(1,log(Dep.in[2]),Dep.in[3]),3)}
-      if(Dep.in[1]==4){Dep.draw<-round(runif(1,Dep.in[2],Dep.in[3]),3)}
-      if(Dep.in[1]==10){Dep.draw<-round(rtnorm(1,Dep.in[2],Dep.in[3],0.01,1),3)}
+      if(Dep.in[1]==2){Dep.draw<-round(1-rbeta.ab(1,1-Dep.in[2],Dep.in[3],0.05,0.95),2)}
+      if(Dep.in[1]==3){Dep.draw<-round(rlnorm(1,log(Dep.in[2]),Dep.in[3]),2)}
+      if(Dep.in[1]==4){Dep.draw<-round(runif(1,Dep.in[2],Dep.in[3]),2)}
+      if(Dep.in[1]==10){Dep.draw<-round(rtnorm(1,Dep.in[2],Dep.in[3],0.01,1),2)}
       Input.draws[i,2]<-Dep.draw
     }
     if(length(Dep.in)>3)
@@ -161,9 +162,9 @@ SSS<-function(filepath,
           M.draw<-0
           while(M.draw<=0)
           {
-          if(M.in[1]==0){M.draw<-round(rnorm(1,M.in[2],M.in[3]),2)}
-          if(M.in[1]==3){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),2)}
-          if(M.in[1]==4){M.draw<-round(runif(1,M.in[2],M.in[3]),2)}
+          if(M.in[1]==0){M.draw<-round(rnorm(1,M.in[2],M.in[3]),3)}
+          if(M.in[1]==3){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),3)}
+          if(M.in[1]==4){M.draw<-round(runif(1,M.in[2],M.in[3]),3)}
           Input.draws[i,3]<-M.draw
           }
         }
@@ -173,24 +174,23 @@ SSS<-function(filepath,
       {
         if(length(M.in)==6)
         {
-          M.draw.M<-0
-          while(M.draw.M<=0)
+          M.draw.M<--1
+          while(M.draw.M<0)
           {
-          if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
-          if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
-          if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
+          if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),3)}
+          if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),3)}
+          if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),3)}
           Input.draws[i,7]<-M.draw.M
         }
         }        
         if(length(M.in)>6){Input.draws[i,7]<-M.draw.M<-M.in[i,2]}
       }
     }
-
     #Growth parameters
 #    if(Linf.in[1]>-1&k.in[1]>-1)
 #    {
-      Covar_Linf_k<-Linf.k.cor*((Linf.in[3]+0.000001)*Linf.in[2]*(k.in[3]+0.000001)*k.in[2]) #caluclate covariance matrix for multivariate sampling
-      Linf_k_sigma <- matrix(c((Linf.in[2]*(Linf.in[3]+0.000001))^2,Covar_Linf_k,Covar_Linf_k,(k.in[2]*(k.in[3]+0.000001))^2),2,2) #Set-up the variance-covariance matrix for multivariate sampling
+      Covar_Linf_k<-Linf.k.cor*((Linf.in[3]+0.000001)*(k.in[3]+0.000001)) #caluclate covariance matrix for multivariate sampling
+      Linf_k_sigma <- matrix(c((Linf.in[3]+0.000001)^2,Covar_Linf_k,Covar_Linf_k,(k.in[3]+0.000001)^2),2,2) #Set-up the variance-covariance matrix for multivariate sampling
       Linf_k_samps<-rtmvnorm(1,c(Linf.in[2],k.in[2]),Linf_k_sigma,lower=rep(0,length(c(Linf.in[2],k.in[2]))))
       Linf.draw<-Input.draws[i,5]<-Linf_k_samps[1]
       k.draw<-Input.draws[i,6]<-Linf_k_samps[2]
@@ -218,16 +218,30 @@ SSS<-function(filepath,
 
 #        if(Linf.in[4]>-1&k.in[4]>-1)
  #         {
-              Covar_Linf_k<-Linf.k.cor*((Linf.in[6]+0.000001)*Linf.in[5]*k.in[6]*k.in[5]) #caluclate covariance matrix for multivariate sampling
-              Linf_k_sigma <- matrix(c((Linf.in[5]*(Linf.in[6]++0.000001))^2,Covar_Linf_k,Covar_Linf_k,(k.in[5]*(k.in[6]+0.000001))^2),2,2) #Set-up the variance-covariance matrix for multivariate sampling
-              Linf_k_samps<-rtmvnorm(1,c(Linf.in[5],k.in[5]),Linf_k_sigma,lower=rep(0,length(c(Linf.in[5],k.in[5]))))
-              Linf.draw.M<-Input.draws[i,9]<-Linf_k_samps[1]
-              k.draw.M<-Input.draws[i,10]<-Linf_k_samps[2]
+      if(ctl.new$parameter_offset_approach==1)
+      {
+            Covar_Linf_k<-Linf.k.cor*((Linf.in[6]+0.000001)*(k.in[6]+0.000001)) #caluclate covariance matrix for multivariate sampling
+            Linf_k_sigma <- matrix(c((Linf.in[6]+0.000001)^2,Covar_Linf_k,Covar_Linf_k,(k.in[6]+0.000001)^2),2,2) #Set-up the variance-covariance matrix for multivariate sampling
+            Linf_k_samps<-rtmvnorm(1,c(Linf.in[5],k.in[5]),Linf_k_sigma,lower=rep(0,length(c(Linf.in[5],k.in[5]))))
+            Linf.draw.M<-Input.draws[i,9]<-Linf_k_samps[1]
+            k.draw.M<-Input.draws[i,10]<-Linf_k_samps[2]
               #if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[2],L1.in[3]),2); Input.draws[i,4]<-L1.draw}
               
-              t0.draw.M<-round(rnorm(1,t0.in[2],t0.in[3]),3)
-              L1.draw.M<-Input.draws[i,8]<-VBGF(Linf.draw.M,k.draw.M,t0.draw.M,t0.draw)
+            t0.draw.M<-round(rnorm(1,t0.in[5],t0.in[6]),3)
+            L1.draw.M<-Input.draws[i,8]<-VBGF(Linf.draw.M,k.draw.M,t0.draw.M,t0.draw)
   #        }  
+      }
+
+      if(ctl.new$parameter_offset_approach==2)
+      {
+              Linf.draw.M<-Input.draws[i,9]<-Linf.in[5]
+              k.draw.M<-Input.draws[i,10]<-k.in[5]
+              #if(sum(L1.in[1:2])>0){L1.draw<-round(rnorm(1,L1.in[2],L1.in[3]),2); Input.draws[i,4]<-L1.draw}
+              
+              t0.draw.M<-round(rnorm(1,t0.in[5],t0.in[6]),3)
+              L1.draw.M<-Input.draws[i,8]<-VBGF(Linf.draw.M,k.draw.M,t0.draw.M,t0.draw)
+      } 
+                              #Change to offset approach
 
       #    if(any(Linf.in[4]<1&k.in[4]<1)&!all(Linf.in[4]<1&k.in[4]<1))
       #    {
@@ -243,9 +257,9 @@ SSS<-function(filepath,
     #Steenpess
     if(h.in[1]>=0 & length(h.in)==3 & FMSY_M.in[1]<0 & BMSY_B0.in[1]<0)
     {
-      if(h.in[1]==1){h.draw<-round(rbeta.ab(1,h.in[2],h.in[3],0.21,0.99),2)}
-      if(h.in[1]==2){h.draw<-round(rbeta(1,h.in[2],h.in[3]),2)}
-      if(h.in[1]==10){h.draw<-round(rtnorm(1,h.in[2],h.in[3],0.21,0.99),2)}
+      if(h.in[1]==1){h.draw<-round(rbeta.ab(1,h.in[2],h.in[3],0.21,0.99),3)}
+      if(h.in[1]==2){h.draw<-round(rbeta(1,h.in[2],h.in[3]),3)}
+      if(h.in[1]==10){h.draw<-round(rtnorm(1,h.in[2],h.in[3],0.21,0.99),3)}
       if(h.in[1]==30){h.draw<-round(rlnormTrunc(1,log(h.in[2]),h.in[3],0.21,0.99),2)}
       if(h.in[1]==4){h.draw<-round(runif(1,h.in[2],h.in[3]),2)}
       Input.draws[i,1]<-h.draw
@@ -261,9 +275,9 @@ SSS<-function(filepath,
       #Draw Ms
         if(M.in[1]>=0 & length(M.in)==6)
         {
-          if(M.in[1]==0){M.draw<-round(rnorm(1,M.in[2],M.in[3]),2)}
-          if(M.in[1]==3){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),2)}
-          if(M.in[1]==4){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),2)}
+          if(M.in[1]==0){M.draw<-round(rnorm(1,M.in[2],M.in[3]),3)}
+          if(M.in[1]==3){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),3)}
+          if(M.in[1]==4){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),3)}
           Input.draws[i,3]<-M.draw
         }
         else{Input.draws[i,3]<-M.draw<-M.in[i,1]}
@@ -272,18 +286,18 @@ SSS<-function(filepath,
           {
             if(length(M.in)==6)
             {
-              if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
-              if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
-              if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
+              if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),3)}
+              if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),3)}
+              if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),3)}
               Input.draws[i,7]<-M.draw.M
             }
             if(length(M.in)>6){Input.draws[i,7]<-M.draw.M<-M.in[i,2]}
            }
         
-        if(FMSY_M.in[1]==2){FMSY_M.draw<-round(rbeta.ab(1,FMSY_M.in[2],FMSY_M.in[3],0.0001,10),2)}
-        if(FMSY_M.in[1]==10){FMSY_M.draw<-round(rtnorm(1,FMSY_M.in[2],FMSY_M.in[3],0.0001,10),2)}
-        if(FMSY_M.in[1]==30){FMSY_M.draw<-round(rlnormTrunc(1,log(FMSY_M.in[2]),FMSY_M.in[3],0.0001,10),2)}
-        if(FMSY_M.in[1]==4){FMSY_M.draw<-round(runif(1,FMSY_M.in[2],FMSY_M.in[3]),2)}
+        if(FMSY_M.in[1]==2){FMSY_M.draw<-round(rbeta.ab(1,FMSY_M.in[2],FMSY_M.in[3],0.0001,10),3)}
+        if(FMSY_M.in[1]==10){FMSY_M.draw<-round(rtnorm(1,FMSY_M.in[2],FMSY_M.in[3],0.0001,10),3)}
+        if(FMSY_M.in[1]==30){FMSY_M.draw<-round(rlnormTrunc(1,log(FMSY_M.in[2]),FMSY_M.in[3],0.0001,10),3)}
+        if(FMSY_M.in[1]==4){FMSY_M.draw<-round(runif(1,FMSY_M.in[2],FMSY_M.in[3]),3)}
         if(length(FMSY_M.in)>3){FMSY_M.draw<-FMSY_M.in[i]}
         Input.draws.MQs[i,1]<-FMSY_M.draw
 
@@ -350,9 +364,9 @@ SSS<-function(filepath,
       #Draw Ms
         if(M.in[1]>=0 & length(M.in)==6)
         {
-          if(M.in[1]==0){M.draw<-round(rnorm(1,M.in[2],M.in[3]),2)}
-          if(M.in[1]==3){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),2)}
-          if(M.in[1]==4){M.draw<-round(runif(1,M.in[2],M.in[3]),2)}
+          if(M.in[1]==0){M.draw<-round(rnorm(1,M.in[2],M.in[3]),3)}
+          if(M.in[1]==3){M.draw<-round(rlnorm(1,log(M.in[2]),M.in[3]),3)}
+          if(M.in[1]==4){M.draw<-round(runif(1,M.in[2],M.in[3]),3)}
           Input.draws[i,3]<-M.draw
         }
         else{Input.draws[i,3]<-M.draw<-M.in[i,1]}
@@ -361,18 +375,18 @@ SSS<-function(filepath,
           {
             if(length(M.in)==6)
             {
-              if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),2)}
-              if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),2)}
-              if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),2)}
+              if(M.in[4]==0){M.draw.M<-round(rnorm(1,M.in[5],M.in[6]),3)}
+              if(M.in[4]==3){M.draw.M<-round(rlnorm(1,log(M.in[5]),M.in[6]),3)}
+              if(M.in[4]==4){M.draw.M<-round(runif(1,M.in[5],M.in[6]),3)}
               Input.draws[i,7]<-M.draw.M
             }
             if(length(M.in)>6){Input.draws[i,7]<-M.draw.M<-M.in[i,2]}
            }
         
-        if(FMSY_M.in[1]==2){FMSY_M.draw<-round(rbeta.ab(1,FMSY_M.in[2],FMSY_M.in[3],0.0001,10),2)}
-        if(FMSY_M.in[1]==10){FMSY_M.draw<-round(rtnorm(1,FMSY_M.in[2],FMSY_M.in[3],0.0001,10),2)}
-        if(FMSY_M.in[1]==30){FMSY_M.draw<-round(rlnormTrunc(1,log(FMSY_M.in[2]),FMSY_M.in[3],0.0001,10),2)}
-        if(FMSY_M.in[1]==4){FMSY_M.draw<-round(runif(1,FMSY_M.in[2],FMSY_M.in[3]),2)}
+        if(FMSY_M.in[1]==2){FMSY_M.draw<-round(rbeta.ab(1,FMSY_M.in[2],FMSY_M.in[3],0.0001,10),3)}
+        if(FMSY_M.in[1]==10){FMSY_M.draw<-round(rtnorm(1,FMSY_M.in[2],FMSY_M.in[3],0.0001,10),3)}
+        if(FMSY_M.in[1]==30){FMSY_M.draw<-round(rlnormTrunc(1,log(FMSY_M.in[2]),FMSY_M.in[3],0.0001,10),3)}
+        if(FMSY_M.in[1]==4){FMSY_M.draw<-round(runif(1,FMSY_M.in[2],FMSY_M.in[3]),3)}
         if(length(FMSY_M.in)>3){FMSY_M.draw<-FMSY_M.in[i]}
         if(BMSY_B0.in[1]==2){BMSY_B0.draw<-round(rbeta.ab(1,BMSY_B0.in[2],BMSY_B0.in[3],0.01,0.99),2)*100}
         if(BMSY_B0.in[1]==10){BMSY_B0.draw<-round(rtnorm(1,BMSY_B0.in[2],BMSY_B0.in[3],0.01,0.99),2)*100}
