@@ -682,7 +682,7 @@ SSS<-function(filepath,
     Quant.out[i,15]<-as.numeric(SSS.output.list[[i]]$derived_quants[grep("B_MSY/SSB_unfished",SSS.output.list[[i]]$derived_quants[,1]),][2])
     if(!is.na(as.numeric(SSS.output.list[[i]]$derived_quants[grep("annF_MSY",SSS.output.list[[i]]$derived_quants[,1]),][2]))){Quant.out[i,16]<-as.numeric(SSS.output.list[[i]]$derived_quants[grep("annF_MSY",SSS.output.list[[i]]$derived_quants[,1]),][2])}
     Quant.out[i,17]<-SSS.output.list[[i]]$likelihoods_used[1,1]
-    Quant.out[i,18]<-SSS.output.list[[i]]$likelihoods_used[3,1]
+    Quant.out[i,18]<-SSS.output.list[[i]]$likelihoods_used[4,1]
     Quant.out[i,19]<-SSS.output.list[[i]]$maximum_gradient_component
     if(Dep.in[1]>=0){Quant.out[i,20]<-as.numeric(dat.new$CPUE[2,4])}
     if(Dep.in[1]>=0){Quant.out[i,21]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][2])}
@@ -823,7 +823,7 @@ SSS<-function(filepath,
         Quant.out[i,15]<-as.numeric(SSS.output.list[[i]]$derived_quants[grep("B_MSY/SSB_unfished",SSS.output.list[[i]]$derived_quants[,1]),][2])
         if(!is.na(as.numeric(SSS.output.list[[i]]$derived_quants[grep("annF_MSY",SSS.output.list[[i]]$derived_quants[,1]),][2]))){Quant.out[i,16]<-as.numeric(SSS.output.list[[i]]$derived_quants[grep("annF_MSY",SSS.output.list[[i]]$derived_quants[,1]),][2])}
         Quant.out[i,17]<-SSS.output.list[[i]]$likelihoods_used[1,1]
-        Quant.out[i,18]<-SSS.output.list[[i]]$likelihoods_used[3,1]
+        Quant.out[i,18]<-SSS.output.list[[i]]$likelihoods_used[4,1]
         Quant.out[i,19]<-SSS.output.list[[i]]$maximum_gradient_component
         if(Dep.in[1]>=0){Quant.out[i,20]<-as.numeric(dat.new$CPUE[2,4])}
         if(Dep.in[1]>=0){Quant.out[i,21]<-as.numeric(strsplit(rep.new[grep(paste("Bratio_",as.numeric(dat.new$CPUE[2,1]),sep=""),rep.new)], " ")[[1]][2])}
