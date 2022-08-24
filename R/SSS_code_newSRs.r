@@ -581,7 +581,7 @@ SSS<-function(filepath,
 
 
     #Run model
-    RUN.SS(paste(filepath,"/",sep=""),ss.cmd=" -nohess -nox > out.txt 2>&1",OS.in=OStype)
+    RUN.SS(paste(filepath,"/",sep=""),ss.cmd=" -nohess -nox > out.txt 2>&1",OS.in=OStype,show_in_console = FALSE)
     #if(OStype=="Windows"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
     #if(OStype=="OSX_Linux"){RUN.SS(paste(filepath,"/",sep=""), ss.exe="./ss",ss.cmd=" -nohess -nox > out.txt 2>&1")}
     

@@ -5,13 +5,13 @@
 ##' @author Jason Cope
 ##' @export
 
-RUN.SS<-function(path,ss.cmd=" -nohess -nox",OS.in="Windows"){ 
+RUN.SS<-function(path,ss.cmd=" -nohess -nox",OS.in="Windows",show_in_console_choice = TRUE){ 
   navigate <- paste("cd ", path, sep="") 
 if(OS.in=="Windows") 
   {
     #command <- paste0(navigate," & ", "ss", ss.cmd) 
     #shell(command, invisible=TRUE, translate=TRUE)
-    run(path,exe="ss",extras=ss.cmd,skipfinished=FALSE,show_in_console = TRUE)
+    run(path,exe="ss",extras=ss.cmd,skipfinished=FALSE)
   } 
 if(OS.in=="Mac")  
   {
