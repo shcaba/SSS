@@ -5,12 +5,13 @@
 ##' @author Jason Cope
 ##' @export
 
-RUN.SS<-function(path,ss.exe="ss",ss.cmd=" -nohess -nox",OS.in=NA){ 
+RUN.SS<-function(path,ss.cmd=" -nohess -nox",OS.in="Windows"){ 
   navigate <- paste("cd ", path, sep="") 
 if(OS.in=="Windows") 
   {
-    command <- paste0(navigate," & ", ss.exe, ss.cmd) 
-    shell(command, invisible=TRUE, translate=TRUE)
+    #command <- paste0(navigate," & ", "ss", ss.cmd) 
+    #shell(command, invisible=TRUE, translate=TRUE)
+    run(path,exe="ss",extras=ss.cmd,skipfinished=FALSE,show_in_console = TRUE)
   } 
 if(OS.in=="Mac")  
   {
@@ -25,8 +26,7 @@ if(OS.in=="Linux")
   {
     command <- c(paste("cd", path), "chmod +x ./ss_linux",paste("./ss_linux", ss.cmd)) 
     system(paste(command, collapse=";"), invisible=TRUE)
-  } 
-  
+  }   
 }  
 
 
