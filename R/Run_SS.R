@@ -11,7 +11,7 @@ if(OS.in=="Windows")
   {
     #command <- paste0(navigate," & ", "ss", ss.cmd) 
     #shell(command, invisible=TRUE, translate=TRUE)
-    run(path,exe="ss",extras=ss.cmd,skipfinished=FALSE)
+    run(path,exe="ss3",extras=ss.cmd,skipfinished=FALSE)
   } 
 if(OS.in=="Mac")  
   {
